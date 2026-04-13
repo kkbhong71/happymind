@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HappyMind - 행복 명상</title>
+    <title>HappyMind - 하이엔드 자연 사운드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -15,98 +15,95 @@
             align-items: center;
             justify-content: center;
             margin: 0;
-            overflow-x: hidden;
-            transition: background 1s ease;
+            overflow: hidden;
+            transition: background 1.5s ease;
         }
         .glass {
             background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 2rem;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2.5rem;
         }
         .timer-circle {
-            transition: all 0.5s ease;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
         }
         .pulse {
-            animation: pulse-animation 4s infinite ease-in-out;
+            animation: breathe-slow 6s infinite ease-in-out;
         }
-        @keyframes pulse-animation {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes breathe-slow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 0 50px rgba(99, 102, 241, 0.3); }
+        }
+        .sound-card {
+            transition: all 0.4s ease;
         }
         .sound-card.active {
             border: 2px solid #6366f1;
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-4px);
         }
-        #affirmation {
-            transition: opacity 0.5s ease-in-out;
-            min-height: 5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 1rem;
+        input[type=range] {
+            cursor: pointer;
         }
     </style>
 </head>
 <body class="p-4" id="main-body">
 
-    <div id="app" class="glass max-w-md w-full p-8 text-center shadow-2xl relative">
-        <header class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-1 text-indigo-700">HappyMind</h1>
-            <p class="text-gray-600 text-sm italic">"진정한 행복은 내면의 고요에서 시작됩니다."</p>
+    <div id="app" class="glass max-w-md w-full p-10 text-center shadow-2xl relative">
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2">HappyMind</h1>
+            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase">Natural Physics Audio Engine v6.0</p>
         </header>
 
-        <!-- Timer Section -->
-        <div id="timer-display" class="mb-8">
-            <div class="w-40 h-40 rounded-full border-4 border-white mx-auto flex items-center justify-center mb-6 timer-circle relative overflow-hidden bg-white/30" id="circle-container">
-                <span id="time-left" class="text-4xl font-light text-gray-800">05:00</span>
+        <!-- Timer Display -->
+        <div class="mb-10">
+            <div id="circle-container" class="w-44 h-44 rounded-full border-[6px] border-white/60 mx-auto flex items-center justify-center mb-8 timer-circle bg-white/20 relative">
+                <span id="time-left" class="text-5xl font-light text-gray-800 tracking-tighter">05:00</span>
             </div>
             
-            <div class="flex justify-center space-x-3">
-                <button id="start-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg text-sm">시작하기</button>
-                <button id="reset-btn" class="bg-white/50 hover:bg-white/80 text-gray-700 px-6 py-2.5 rounded-full font-bold transition-all text-sm">초기화</button>
+            <div class="flex justify-center space-x-4">
+                <button id="start-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3.5 rounded-full font-bold transition-all shadow-xl text-sm active:scale-95">시작하기</button>
+                <button id="reset-btn" class="bg-white/40 hover:bg-white/60 text-gray-700 px-10 py-3.5 rounded-full font-bold transition-all text-sm active:scale-95">초기화</button>
             </div>
         </div>
 
         <!-- Sound Selection -->
-        <div class="mb-8">
-            <p class="text-xs font-bold text-indigo-700 mb-3 text-left ml-1 uppercase tracking-wider">Premium Soundscapes</p>
-            <div class="grid grid-cols-3 gap-2">
-                <button class="sound-card active bg-white/40 p-3 rounded-xl transition-all hover:bg-white/60 text-sm" data-sound="forest" data-bg="linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)">
-                    🌳<br>심연의 숲
+        <div class="mb-10">
+            <p class="text-[11px] font-black text-indigo-700 mb-4 text-left px-2 uppercase tracking-[0.2em]">Atmosphere Engine</p>
+            <div class="grid grid-cols-3 gap-3">
+                <button class="sound-card active bg-white/30 p-4 rounded-3xl text-sm flex flex-col items-center" data-sound="forest" data-bg="linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)">
+                    <span class="text-2xl mb-2">🌿</span>바람과 숲
                 </button>
-                <button class="sound-card bg-white/40 p-3 rounded-xl transition-all hover:bg-white/60 text-sm" data-sound="ocean" data-bg="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
-                    🌊<br>행복 파도
+                <button class="sound-card bg-white/30 p-4 rounded-3xl text-sm flex flex-col items-center" data-sound="ocean" data-bg="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
+                    <span class="text-2xl mb-2">🌊</span>깊은 파도
                 </button>
-                <button class="sound-card bg-white/40 p-3 rounded-xl transition-all hover:bg-white/60 text-sm" data-sound="rain" data-bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    ☔<br>리얼 빗소리
+                <button class="sound-card bg-white/30 p-4 rounded-3xl text-sm flex flex-col items-center" data-sound="rain" data-bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                    <span class="text-2xl mb-2">☔</span>순수 빗소리
                 </button>
             </div>
         </div>
 
-        <!-- Affirmation Section -->
-        <div class="bg-white/40 p-6 rounded-2xl mb-6 shadow-inner">
+        <!-- Affirmation -->
+        <div class="bg-white/50 p-7 rounded-[2rem] mb-8 shadow-inner min-h-[140px] flex flex-col justify-center items-center">
             <p id="affirmation" class="text-sm md:text-base text-gray-800 leading-relaxed italic font-medium">
                 "나는 오늘 충분히 행복할 자격이 있으며, 내 안의 무한한 평화와 연결됩니다."
             </p>
-            <button id="new-affirmation" class="mt-4 text-[10px] text-indigo-600 font-bold hover:underline bg-white/30 px-3 py-1 rounded-full">다른 명상 문구 보기</button>
+            <button id="new-affirmation" class="mt-5 text-[10px] text-white font-bold bg-indigo-500/80 px-4 py-1.5 rounded-full hover:bg-indigo-600 transition-colors">새로운 확언</button>
         </div>
 
-        <!-- Volume Control -->
-        <div class="flex items-center justify-between text-[11px] text-gray-600 px-2 mb-4">
-            <span>몰입도 조절</span>
-            <input type="range" id="volume" min="0" max="0.4" step="0.01" value="0.2" class="w-32 accent-indigo-500">
+        <!-- Advanced Controls -->
+        <div class="flex items-center justify-between text-[11px] text-gray-600 font-bold px-2">
+            <span class="uppercase tracking-widest">Acoustic Balance</span>
+            <input type="range" id="volume" min="0" max="0.5" step="0.01" value="0.25" class="w-36 h-1.5 bg-gray-200 rounded-lg appearance-none accent-indigo-600">
         </div>
 
-        <footer class="mt-8 border-t border-white/20 pt-4">
-            <p class="text-[10px] text-gray-500 leading-tight">
-                &copy; 2026 HappyMind Project. <br>
-                Created by <span class="font-bold text-indigo-600">K.G.B</span><br>
-                100종의 명상 문구와 리얼 타임 사운드 엔진 탑재.
-            </p>
+        <footer class="mt-10 pt-6 border-t border-white/20">
+            <div class="flex flex-col items-center space-y-1">
+                <p class="text-[10px] text-indigo-900/60 tracking-[0.2em] font-bold">Designed & Crafted by K.G.B</p>
+                <p class="text-[8px] text-gray-400 tracking-widest uppercase font-medium">Sound Physics Mastered v6.0</p>
+            </div>
         </footer>
     </div>
 
@@ -114,16 +111,14 @@
         let timeLeft = 300;
         let timerId = null;
         let isRunning = false;
-        
         let audioCtx = null;
         let masterGain = null;
-        let noiseSource = null;
-        let binauralNodes = [];
-        let modNodes = [];
-        let birdTimer = null;
+        
+        let coreNodes = [];
+        let birdTimers = [];
         let currentSoundType = 'forest';
 
-        // --- 100종의 엄선된 명상 확언 문구 ---
+        // 100가지의 정밀한 명상 확언 문구
         const affirmations = [
             "나는 오늘 충분히 행복할 자격이 있으며, 내 안의 무한한 평화와 연결됩니다.",
             "나의 마음은 깊고 푸른 호수처럼 평온하며, 어떤 파도에도 흔들리지 않습니다.",
@@ -135,309 +130,320 @@
             "나는 내면의 침묵 속에서 진정한 자유와 기쁨을 선택하며 살아갑니다.",
             "어둠이 지나면 빛이 오듯, 내 삶의 모든 시련은 나를 더 단단하게 성장시킵니다.",
             "나의 존재 자체로도 충분히 아름다우며, 타인의 시선에서 벗어나 나만의 길을 걷습니다.",
-            "나는 나를 방해하는 모든 부정적인 생각을 기꺼이 떠나보냅니다.",
-            "나의 몸은 건강하고, 나의 마음은 명료하며, 나의 영혼은 평온합니다.",
-            "나는 타인에게 친절하며, 그 친절이 메아리가 되어 나에게 더 큰 행복으로 돌아옵니다.",
-            "세상의 소음에서 잠시 벗어나, 내 영혼이 들려주는 고요한 목소리에 귀를 기울입니다.",
-            "나는 오늘도 내가 할 수 있는 최선을 다했으며, 그 자체로 충분히 훌륭합니다.",
-            "나는 불완전함 속에서도 아름다움을 발견하는 눈을 가졌습니다.",
-            "내 인생의 모든 순간은 성장을 위한 소중한 밑거름이 됩니다.",
-            "나는 내 감정의 주인이며, 평화와 사랑을 선택할 힘이 있습니다.",
-            "풍요로움은 이미 내 안에 있으며, 나는 감사함으로 그것을 끌어당깁니다.",
-            "나의 매일은 새로운 가능성으로 가득 차 있으며, 나는 용기 있게 나아갑니다.",
-            "나는 내 삶의 속도를 스스로 조절하며, 조급함 대신 여유를 선택합니다.",
-            "나는 있는 그대로의 나를 수용하며, 나를 향한 판단을 멈춥니다.",
-            "나의 마음은 사랑으로 가득 차 있으며, 만나는 모든 생명에게 축복을 보냅니다.",
-            "나는 진실한 마음으로 소통하며, 진정한 관계를 맺어갑니다.",
-            "나에게는 어려움을 극복할 내면의 힘과 회복탄력성이 있습니다.",
-            "나의 호흡은 우주의 리듬과 일치하며, 나는 조화로운 존재입니다.",
+            "나는 나 자신을 진심으로 용서하며, 그 용서를 통해 더 넓은 세상으로 나아갑니다.",
+            "나의 몸은 건강한 에너지로 가득 차 있고, 모든 세포가 활기차게 살아 움직입니다.",
+            "나는 내 삶에 찾아오는 모든 풍요로움을 감사히 받아들일 준비가 되어 있습니다.",
+            "불안이 찾아올 때, 나는 고요히 호흡하며 내 안의 단단한 중심을 느낍니다.",
+            "나는 내가 원하는 삶을 현실로 만들 수 있는 강력한 의지와 힘을 가지고 있습니다.",
+            "나의 생각은 맑고 명료하며, 나는 항상 나에게 최선의 선택을 내립니다.",
+            "나는 다른 사람들과 조화롭게 소통하며, 따뜻한 사랑과 에너지를 주고받습니다.",
+            "나의 가슴은 언제나 희망을 향해 열려 있으며, 어떤 순간에도 절망하지 않습니다.",
             "나는 오늘 내가 마주할 모든 일들을 부드럽고 유연하게 받아들입니다.",
-            "나의 창의성은 무한하며, 나는 매 순간 새로운 영감을 얻습니다.",
-            "나는 나를 지치게 하는 모든 집착을 내려놓고 가벼워집니다.",
-            "나의 하루는 평온하게 시작하여 만족스럽게 마무리됩니다.",
-            "나는 내 삶의 모든 선택에 책임을 지며, 그 과정에서 배움을 얻습니다.",
-            "나의 에너지는 맑고 활기차며, 주변 사람들에게 긍정적인 영향을 줍니다.",
-            "나는 내가 가진 재능을 세상과 나눌 준비가 되어 있습니다.",
-            "나는 충분히 가치 있는 사람이며, 성공과 행복을 누릴 자격이 있습니다.",
-            "나의 마음속 정원에는 감사의 꽃이 활짝 피어 있습니다.",
-            "나는 내 몸의 신호에 귀를 기울이며, 나를 소중히 돌봅니다.",
-            "나는 변화를 두려워하지 않으며, 새로운 시작을 기쁘게 맞이합니다.",
-            "나의 생각은 현실을 만드는 씨앗이며, 나는 긍정의 씨앗을 심습니다.",
-            "나는 나만의 고유한 빛을 발산하며, 비교하지 않는 삶을 삽니다.",
-            "나는 용서함으로써 나 자신을 자유롭게 합니다.",
-            "나의 가슴은 언제나 희망을 향해 열려 있습니다.",
-            "나는 모든 긴장을 내려놓고 깊은 휴식 속으로 들어갑니다.",
-            "나는 내가 원하는 삶을 살 권리가 있으며, 그 길을 스스로 개척합니다.",
-            "나의 의지는 단단하고, 나의 행동은 목적을 향해 나아갑니다.",
-            "나는 작고 사소한 일에서도 기쁨을 발견하는 능력이 있습니다.",
-            "나는 우주의 무한한 공급을 신뢰하며, 부족함이 없음을 믿습니다.",
-            "나의 고요함은 나를 보호하는 가장 강력한 방패입니다.",
-            "나는 사랑받기 위해 태어났으며, 이미 충분한 사랑을 받고 있습니다.",
-            "나는 삶의 신비로움을 경이로운 마음으로 바라봅니다.",
-            "나의 인내심은 나를 더 깊은 지혜로 인도합니다.",
-            "나는 타인의 성공을 진심으로 축하하며, 나 또한 번영할 것임을 압니다.",
-            "나의 잠재력은 끝이 없으며, 나는 날마다 더 나은 사람이 됩니다.",
-            "나는 내 삶에 찾아오는 모든 인연을 소중히 대합니다.",
-            "나의 마음은 명경지수와 같아 세상의 진실을 그대로 비춥니다.",
-            "나는 혼자 있을 때도 평온하며, 나 자신과 좋은 친구가 됩니다.",
-            "나는 나를 제한하는 모든 믿음을 깨뜨리고 비상합니다.",
-            "나의 말 한마디는 따뜻한 위로가 되고 긍정의 힘이 됩니다.",
-            "나는 자연의 일부이며, 대지의 에너지가 나를 채우는 것을 느낍니다.",
-            "나의 삶은 축복이며, 나는 이 소중한 생명을 만끽합니다.",
-            "나는 내 꿈을 실현할 구체적인 계획과 열정을 가지고 있습니다.",
-            "나의 내면 아이는 사랑 안에서 안전하고 평화롭습니다.",
-            "나는 비판 대신 격려를, 원망 대신 이해를 선택합니다.",
-            "나의 집중력은 예리하며, 나는 현재에 온전히 몰입합니다.",
-            "나는 돈과 풍요에 대해 긍정적인 마음가짐을 가집니다.",
-            "나의 목소리는 힘이 있고, 나는 나의 진실을 당당히 말합니다.",
-            "나는 오늘 일어난 모든 일들에서 감사한 점 세 가지를 떠올립니다.",
-            "나의 가슴속에는 식지 않는 열정의 불꽃이 타오르고 있습니다.",
-            "나는 세상을 더 밝고 아름다운 곳으로 만드는 데 기여합니다.",
-            "나의 웃음은 나를 치유하고 타인에게 행복을 전파합니다.",
-            "나는 불확실함 속에서도 나만의 중심을 잃지 않습니다.",
-            "나의 판단력은 정확하며, 나는 직관의 목소리를 신뢰합니다.",
-            "나는 나를 위한 건강한 경계를 설정할 줄 압니다.",
-            "나의 삶은 우아하고 품격 있으며, 매 순간 기쁨이 흐릅니다.",
-            "나는 배우는 것을 즐기며, 지적 성장을 멈추지 않습니다.",
-            "나의 존재는 그 자체로 기적이며 감동입니다.",
-            "나는 나를 방해하는 장애물을 성장의 기회로 바꿉니다.",
-            "나의 마음은 넓은 바다와 같아 모든 것을 품을 수 있습니다.",
-            "나는 진정한 나 자신이 되는 것을 두려워하지 않습니다.",
-            "나의 노력은 반드시 결실을 맺으며, 나는 그 과정을 즐깁니다.",
-            "나는 충분한 휴식을 통해 에너지를 회복할 권리가 있습니다.",
-            "나의 영혼은 언제나 안전하게 인도받고 있습니다.",
-            "나는 내 삶의 모든 풍경을 사랑의 시선으로 바라봅니다.",
-            "나의 마음은 햇살처럼 따사롭고 포근합니다.",
-            "나는 정직함이 주는 내면의 평화를 소중히 여깁니다.",
-            "나의 매 순간은 신성하며, 나는 감사함으로 기도합니다.",
-            "나는 나를 둘러싼 모든 아름다움에 경탄합니다.",
-            "나의 두려움은 환상일 뿐이며, 나는 사랑 안에서 안식합니다.",
-            "나는 친절한 눈빛과 미소로 세상과 연결됩니다.",
-            "나의 직감은 나를 가장 올바른 길로 안내합니다.",
-            "나는 오늘 하루를 축복으로 여기며 기쁘게 시작합니다.",
-            "나의 삶은 순조롭게 흐르고 있으며, 나는 그 흐름에 몸을 맡깁니다.",
-            "나는 타인을 용서함으로 나에게 평화라는 선물을 줍니다.",
-            "나의 가슴은 무한한 자비심으로 가득 차 있습니다.",
-            "나는 오늘 만나는 모든 사람에게서 배울 점을 찾습니다.",
-            "나의 정신은 깨어 있고, 나의 감각은 살아 있습니다.",
-            "나는 우주가 나를 돕고 있다는 사실을 굳게 믿습니다.",
-            "나의 매일은 기적의 연속이며, 나는 그것을 알아차립니다.",
-            "나는 평화 그 자체이며, 사랑 그 자체입니다.",
-            "나의 삶은 충만하며, 나는 이미 모든 것을 가졌습니다.",
-            "나는 지금 이대로의 나를 온전히 축복합니다."
+            "나의 매일은 새로운 기적으로 가득 차 있으며, 나는 그 기적의 주인공입니다.",
+            "나는 내 안의 고요함 속에서 무한한 영감을 얻고 이를 세상에 펼칩니다.",
+            "나는 비교하지 않는 삶을 통해 진정한 평화와 자존감을 지켜나갑니다.",
+            "나의 호흡은 나를 현재에 머물게 하는 가장 소중한 닻입니다.",
+            "나는 내 삶의 모든 계절을 사랑하며, 변화를 두려워하지 않고 수용합니다.",
+            "나의 친절함은 나 자신을 먼저 치유하고, 나아가 주변을 밝게 비춥니다.",
+            "나는 오늘 하루를 천천히, 그리고 깊게 음미하며 살아갈 것을 다짐합니다.",
+            "나의 영혼은 평온의 바다와 같아, 어떤 폭풍우도 깊은 바닥은 건드리지 못합니다.",
+            "나는 스스로를 믿으며, 내 꿈을 향해 나아가는 모든 걸음을 지지합니다.",
+            "나의 가슴은 사랑으로 가득 차 있어, 미움과 분노가 머물 자리가 없습니다.",
+            "나는 내 몸의 신호에 귀를 기울이며, 나에게 필요한 휴식과 영양을 제공합니다.",
+            "나는 세상에 단 하나뿐인 빛나는 별이며, 나만의 빛을 발산합니다.",
+            "과거는 이미 지나갔고 미래는 아직 오지 않았으니, 나는 오직 지금에 충실합니다.",
+            "나의 언어는 따뜻하고 긍정적이며, 나 자신과 타인에게 위로가 됩니다.",
+            "나는 어려움 속에서도 긍정의 면을 찾아내는 밝은 눈을 가졌습니다.",
+            "나의 삶은 점점 더 나은 방향으로 흐르고 있으며, 나는 그 흐름을 신뢰합니다.",
+            "나는 완벽하지 않아도 괜찮습니다. 나의 부족함 또한 성장의 소중한 과정입니다.",
+            "나는 오늘 마주치는 모든 사람들에게 미소와 친절을 건넵니다.",
+            "내 안에는 모든 상처를 스스로 치유할 수 있는 신비로운 힘이 있습니다.",
+            "나는 돈과 풍요가 내 삶으로 자연스럽게 흘러 들어오도록 마음을 엽니다.",
+            "나의 꿈은 현실이 될 가치가 있으며, 우주는 나의 꿈을 돕고 있습니다.",
+            "나는 스트레스를 평화로운 에너지로 전환할 줄 아는 현명한 사람입니다.",
+            "나의 집중력은 예리하고 강하며, 내가 목표한 바를 끝까지 완수합니다.",
+            "나는 작은 것에도 감사할 줄 아는 마음을 가져, 매 순간이 축복입니다.",
+            "나의 인내심은 나무처럼 깊게 뿌리 내려, 어떤 시련도 견뎌냅니다.",
+            "나는 진실된 모습으로 살아갈 때 가장 큰 행복과 안정감을 느낍니다.",
+            "나의 창의성은 마르지 않는 샘물처럼 끊임없이 솟아오릅니다.",
+            "나는 내 삶의 모든 책임이 나에게 있음을 인정하고 기쁘게 받아들입니다.",
+            "나의 존재는 타인에게 영감이 되며, 세상에 긍정적인 변화를 일으킵니다.",
+            "나는 어제의 실수에 얽매이지 않고, 새로운 오늘을 선물로 받습니다.",
+            "나의 마음속 정원에는 매일 사랑과 평화의 꽃이 피어납니다.",
+            "나는 내 감정을 존중하며, 감정이 흘러가는 대로 고요히 지켜봅니다.",
+            "나의 가슴속에는 세상을 품을 수 있는 넓은 이해심이 자라납니다.",
+            "나는 내가 가진 재능을 세상과 나누며 진정한 보람을 얻습니다.",
+            "나의 의식은 우주의 무한한 에너지와 연결되어 언제나 충만합니다.",
+            "나는 긴장을 풀고 삶의 파도를 즐겁게 타는 법을 배웁니다.",
+            "나의 미소는 주변의 모든 어둠을 걷어내는 강력한 마법입니다.",
+            "나는 충분히 쉬고 에너지를 충전할 권리가 있음을 기억합니다.",
+            "나의 삶에 일어나는 모든 일에는 그럴만한 이유와 가르침이 있습니다.",
+            "나는 내 앞의 모든 장애물을 성장의 기회로 바꾸는 연금술사입니다.",
+            "나의 믿음은 태산처럼 견고하여 흔들림 없이 목표를 향합니다.",
+            "나는 오늘 나 자신에게 따뜻한 위로와 격려의 한마디를 건냅니다.",
+            "나의 존재는 우주가 설계한 완벽한 작품의 일부분입니다.",
+            "나는 질투 대신 축복을 선택하며, 타인의 성공에서 기쁨을 찾습니다.",
+            "나의 시간은 소중하며, 나는 내 가치에 맞는 곳에 시간을 투자합니다.",
+            "나는 내면의 고요 속에서 세상이 줄 수 없는 진정한 안식을 얻습니다.",
+            "나의 사랑은 조건이 없으며, 나 자신으로부터 시작되어 널리 퍼집니다.",
+            "나는 새로운 도전을 즐기며, 그 과정에서 나만의 잠재력을 발견합니다.",
+            "나의 직관은 정확하며, 나는 내 안의 목소리를 신뢰하고 따릅니다.",
+            "나는 오늘 마주할 모든 대화 속에서 경청과 공감을 실천합니다.",
+            "나의 에너지는 맑고 투명하여 보는 이의 마음까지 평온하게 합니다.",
+            "나는 실패를 두려워하지 않는 용기 있는 여행자입니다.",
+            "나의 삶은 풍요와 사랑의 에너지가 끊임없이 순환하는 통로입니다.",
+            "나는 사소한 걱정거리들을 우주의 거대한 흐름 속에 맡깁니다.",
+            "나의 마음은 언제나 고마움으로 가득 차 있어 부족함이 없습니다.",
+            "나는 내가 원하는 사람으로 거듭날 수 있는 능력을 지금 가지고 있습니다.",
+            "나의 한 걸음 한 걸음은 평화와 기쁨으로 가득 찬 길입니다.",
+            "나는 오늘 나만의 속도로 걷기로 결심하며 조급함을 내려놓습니다.",
+            "나의 의지는 강철처럼 단단하고, 나의 마음은 깃털처럼 유연합니다.",
+            "나는 세상의 소음 속에서도 나만의 고요한 중심을 잃지 않습니다.",
+            "나의 존재는 누군가에게는 반드시 필요한 따뜻한 빛입니다.",
+            "나는 용서받아야 할 사람들을 용서하며 마음의 짐을 덜어냅니다.",
+            "나의 지혜는 경험을 통해 깊어지며, 나는 매일 현명해지고 있습니다.",
+            "나는 오늘 일어날 모든 멋진 일들을 설레는 마음으로 기다립니다.",
+            "나의 몸과 마음은 완벽한 균형을 이루며 최상의 상태를 유지합니다.",
+            "나는 내 삶에 나타나는 풍요의 징조들을 기쁘게 포착합니다.",
+            "나의 성장은 끝이 없으며, 나는 매일 더 나은 존재가 됩니다.",
+            "나는 비판보다는 격려를, 원망보다는 이해를 선택합니다.",
+            "나의 삶은 의미 있는 목적을 향해 나아가고 있습니다.",
+            "나는 오늘 나에게 주어진 이 시간을 최고의 명작으로 만듭니다.",
+            "나의 감사는 기적을 부르는 가장 강력한 주파수입니다.",
+            "나는 내 안의 두려움을 인정하고 그것과 함께 나아갈 용기가 있습니다.",
+            "나의 평화는 외부 환경이 아닌 내 마음의 선택에서 나옵니다.",
+            "나는 오늘 만나는 모든 생명체에게 존중과 자애를 보냅니다.",
+            "나의 성공은 자연스러운 결과이며, 나는 그것을 누릴 자격이 있습니다.",
+            "나는 내 삶의 모든 불확실성을 가능성으로 바꾸어 생각합니다.",
+            "나의 영혼은 자유로우며 어떤 제약도 나를 가두지 못합니다.",
+            "나는 우주가 나를 위해 예비한 모든 선물을 감사히 수용합니다.",
+            "나의 마음챙김은 나를 더 깊은 통찰과 평온으로 인도합니다.",
+            "나는 나 자신을 조건 없이 지지하는 가장 든든한 조력자입니다.",
+            "나는 지금 이 순간, 충분히 안전하며 온전하게 평화롭습니다."
         ];
 
-        const timeLeftDisplay = document.getElementById('time-left');
-        const startBtn = document.getElementById('start-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const circleContainer = document.getElementById('circle-container');
-        const affirmationText = document.getElementById('affirmation');
-        const newAffirmationBtn = document.getElementById('new-affirmation');
-        const volumeControl = document.getElementById('volume');
-        const soundCards = document.querySelectorAll('.sound-card');
-        const body = document.getElementById('main-body');
-
-        // --- Audio Engine Logic (디자인 결과 유지) ---
         function initAudio() {
             if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             masterGain = audioCtx.createGain();
-            masterGain.gain.setValueAtTime(volumeControl.value, audioCtx.currentTime);
+            masterGain.gain.setValueAtTime(document.getElementById('volume').value, audioCtx.currentTime);
             masterGain.connect(audioCtx.destination);
         }
 
-        function createRainBuffer() {
-            const sampleRate = audioCtx.sampleRate;
-            const length = 4 * sampleRate;
-            const buffer = audioCtx.createBuffer(2, length, sampleRate);
-            for (let channel = 0; channel < 2; channel++) {
-                const data = buffer.getChannelData(channel);
-                for (let i = 0; i < length; i++) {
-                    let white = Math.random() * 2 - 1;
-                    let drop = 0;
-                    if (Math.random() < 0.002) drop = (Math.random() * 2 - 1) * 0.5;
-                    data[i] = (white * 0.05) + drop;
-                }
-            }
-            return buffer;
-        }
+        // --- 사운드 엔진 v6.0 핵심 로직 ---
 
-        function createDeepNoise(type) {
-            const bufferSize = 5 * audioCtx.sampleRate;
+        function createForestWind() {
+            const bufferSize = audioCtx.sampleRate * 10;
             const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
             for (let channel = 0; channel < 2; channel++) {
-                const output = buffer.getChannelData(channel);
+                const data = buffer.getChannelData(channel);
                 let lastOut = 0;
                 for (let i = 0; i < bufferSize; i++) {
                     const white = Math.random() * 2 - 1;
-                    output[i] = (lastOut + (0.02 * white)) / 1.02;
-                    lastOut = output[i];
-                    output[i] *= 3.5;
+                    data[i] = (lastOut + (0.01 * white)) / 1.01;
+                    lastOut = data[i];
+                    data[i] *= 1.5;
                 }
             }
-            return buffer;
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.value = 250;
+
+            const lfo = audioCtx.createOscillator();
+            const lfoGain = audioCtx.createGain();
+            lfo.frequency.value = 0.04;
+            lfoGain.gain.value = 100;
+            lfo.connect(lfoGain);
+            lfoGain.connect(filter.frequency);
+            lfo.start();
+
+            source.connect(filter).connect(masterGain);
+            coreNodes.push(source, lfo, lfoGain, filter);
+            source.start();
         }
 
-        function startBinauralBeats(baseFreq, beatFreq) {
-            const leftOsc = audioCtx.createOscillator();
-            const rightOsc = audioCtx.createOscillator();
-            const leftGain = audioCtx.createGain();
-            const rightGain = audioCtx.createGain();
-            const pannerL = audioCtx.createPanner();
-            const pannerR = audioCtx.createPanner();
-
-            leftOsc.frequency.value = baseFreq;
-            rightOsc.frequency.value = baseFreq + beatFreq;
-            pannerL.setPosition(-1, 0, 0);
-            pannerR.setPosition(1, 0, 0);
-            leftGain.gain.value = 0.07;
-            rightGain.gain.value = 0.07;
-
-            leftOsc.connect(pannerL).connect(leftGain).connect(masterGain);
-            rightOsc.connect(pannerR).connect(rightGain).connect(masterGain);
-            leftOsc.start();
-            rightOsc.start();
-            binauralNodes.push(leftOsc, rightOsc, leftGain, rightGain);
-        }
-
-        function playAdvancedBird() {
+        function createBird() {
             if (!isRunning || currentSoundType !== 'forest') return;
+            
             const now = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            const f = audioCtx.createBiquadFilter();
-            const base = 2800 + Math.random() * 1200;
-            osc.frequency.setValueAtTime(base, now);
-            osc.frequency.exponentialRampToValueAtTime(base + 600, now + 0.1);
-            f.type = "bandpass"; f.frequency.value = base;
-            g.gain.setValueAtTime(0, now);
-            g.gain.linearRampToValueAtTime(volumeControl.value * 0.12, now + 0.04);
-            g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-            osc.connect(f).connect(g).connect(masterGain);
-            osc.start(now); osc.stop(now + 0.25);
-            birdTimer = setTimeout(playAdvancedBird, 7000 + Math.random() * 12000);
+            const gainNode = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+            
+            const baseFreq = 2200 + Math.random() * 800;
+            osc.frequency.setValueAtTime(baseFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq + 600, now + 0.1);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq - 200, now + 0.3);
+            
+            filter.type = "bandpass";
+            filter.frequency.value = baseFreq + 300;
+            filter.Q.value = 5;
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.08, now + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            
+            const panner = audioCtx.createStereoPanner();
+            panner.pan.value = Math.random() * 2 - 1;
+
+            osc.connect(filter).connect(panner).connect(gainNode).connect(masterGain);
+            osc.start(now);
+            osc.stop(now + 0.5);
+            
+            birdTimers.push(setTimeout(createBird, 3000 + Math.random() * 4000));
+        }
+
+        function createRealisticRain() {
+            const bufferSize = audioCtx.sampleRate * 5;
+            const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
+            for (let channel = 0; channel < 2; channel++) {
+                const data = buffer.getChannelData(channel);
+                for (let i = 0; i < bufferSize; i++) {
+                    let p = Math.random();
+                    let background = (Math.random() * 2 - 1) * 0.012;
+                    let drop = 0;
+                    if (p > 0.999) drop = (Math.random() * 2 - 1) * 0.25;
+                    data[i] = background + drop;
+                }
+            }
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+            
+            const lowFilter = audioCtx.createBiquadFilter();
+            lowFilter.type = "lowpass";
+            lowFilter.frequency.value = 1800;
+
+            const resonanceFilter = audioCtx.createBiquadFilter();
+            resonanceFilter.type = "peaking";
+            resonanceFilter.frequency.value = 800;
+            resonanceFilter.Q.value = 1.5;
+            resonanceFilter.gain.value = 5;
+
+            source.connect(lowFilter).connect(resonanceFilter).connect(masterGain);
+            source.start();
+            coreNodes.push(source, lowFilter, resonanceFilter);
+        }
+
+        function createOceanEngine() {
+            const bufferSize = audioCtx.sampleRate * 6;
+            const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
+            for (let c = 0; c < 2; c++) {
+                const d = buffer.getChannelData(c);
+                let lastOut = 0;
+                for (let i = 0; i < d.length; i++) {
+                    const white = Math.random() * 2 - 1;
+                    d[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = d[i];
+                    d[i] *= 2.0;
+                }
+            }
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.value = 300;
+
+            const gainNode = audioCtx.createGain();
+            const cycle = 10; 
+            
+            function animateWave() {
+                if (!isRunning || currentSoundType !== 'ocean') return;
+                const t = audioCtx.currentTime;
+                gainNode.gain.cancelScheduledValues(t);
+                gainNode.gain.exponentialRampToValueAtTime(0.35, t + 4.5);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, t + cycle);
+                setTimeout(animateWave, cycle * 1000);
+            }
+
+            source.connect(filter).connect(gainNode).connect(masterGain);
+            source.start();
+            coreNodes.push(source, filter, gainNode);
+            animateWave();
         }
 
         function startSoundEngine() {
             initAudio();
             stopSoundEngine();
-            noiseSource = audioCtx.createBufferSource();
-            const filter = audioCtx.createBiquadFilter();
-            
-            if (currentSoundType === 'rain') {
-                noiseSource.buffer = createRainBuffer();
-                filter.type = "highpass";
-                filter.frequency.value = 800;
-                const secondFilter = audioCtx.createBiquadFilter();
-                secondFilter.type = "lowpass";
-                secondFilter.frequency.value = 6000;
-                noiseSource.connect(filter).connect(secondFilter).connect(masterGain);
-                modNodes.push(secondFilter);
-            } else {
-                noiseSource.buffer = createDeepNoise(currentSoundType);
-                filter.type = "lowpass";
-                filter.frequency.value = currentSoundType === 'forest' ? 400 : 600;
-                const lfo = audioCtx.createOscillator();
-                const lfoGain = audioCtx.createGain();
-                lfo.frequency.value = currentSoundType === 'ocean' ? 0.12 : 0.08;
-                lfoGain.gain.value = currentSoundType === 'ocean' ? 200 : 80;
-                lfo.connect(lfoGain);
-                lfoGain.connect(filter.frequency);
-                lfo.start();
-                noiseSource.connect(filter).connect(masterGain);
-                modNodes.push(lfo, lfoGain);
-            }
-
-            noiseSource.loop = true;
-            noiseSource.start();
-            modNodes.push(noiseSource, filter);
 
             if (currentSoundType === 'forest') {
-                startBinauralBeats(165, 6.0);
-                playAdvancedBird();
+                createForestWind(); 
+                createBird();    
+                setTimeout(createBird, 1500);
             } else if (currentSoundType === 'ocean') {
-                startBinauralBeats(135, 4.5);
-            } else if (currentSoundType === 'rain') {
-                startBinauralBeats(180, 8.0);
+                createOceanEngine(); 
+            } else {
+                createRealisticRain();    
             }
         }
 
         function stopSoundEngine() {
-            modNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-            binauralNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-            modNodes = [];
-            binauralNodes = [];
-            if (birdTimer) clearTimeout(birdTimer);
+            coreNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+            birdTimers.forEach(clearTimeout);
+            coreNodes = []; birdTimers = [];
         }
 
-        // --- UI Control ---
+        // --- UI 및 제어 ---
         function updateDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timeLeftDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('time-left').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        async function toggleTimer() {
+        document.getElementById('start-btn').addEventListener('click', () => {
             if (isRunning) {
-                clearInterval(timerId);
-                stopSoundEngine();
-                startBtn.textContent = '다시 시작';
-                circleContainer.classList.remove('pulse', 'bg-indigo-100/50');
+                clearInterval(timerId); stopSoundEngine();
+                document.getElementById('start-btn').textContent = '다시 시작';
+                document.getElementById('circle-container').classList.remove('pulse');
             } else {
                 startSoundEngine();
                 timerId = setInterval(() => {
-                    timeLeft--;
-                    updateDisplay();
-                    if (timeLeft <= 0) {
-                        clearInterval(timerId);
-                        isRunning = false;
-                        stopSoundEngine();
-                        startBtn.textContent = '완료';
-                        circleContainer.classList.remove('pulse');
-                    }
+                    timeLeft--; updateDisplay();
+                    if (timeLeft <= 0) { clearInterval(timerId); stopSoundEngine(); isRunning = false; }
                 }, 1000);
-                startBtn.textContent = '일시 정지';
-                circleContainer.classList.add('pulse', 'bg-indigo-100/50');
+                document.getElementById('start-btn').textContent = '일시 정지';
+                document.getElementById('circle-container').classList.add('pulse');
             }
             isRunning = !isRunning;
-        }
+        });
 
-        function resetTimer() {
-            clearInterval(timerId);
-            stopSoundEngine();
-            timeLeft = 300;
-            isRunning = false;
-            updateDisplay();
-            startBtn.textContent = '시작하기';
-            circleContainer.classList.remove('pulse', 'bg-indigo-100/50');
-        }
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            clearInterval(timerId); stopSoundEngine();
+            timeLeft = 300; isRunning = false; updateDisplay();
+            document.getElementById('start-btn').textContent = '시작하기';
+            document.getElementById('circle-container').classList.remove('pulse');
+        });
 
-        soundCards.forEach(card => {
+        document.querySelectorAll('.sound-card').forEach(card => {
             card.addEventListener('click', () => {
                 currentSoundType = card.dataset.sound;
-                const bgType = card.dataset.bg;
-                soundCards.forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
-                body.style.background = bgType;
+                document.getElementById('main-body').style.background = card.dataset.bg;
                 if (isRunning) startSoundEngine();
             });
         });
 
-        startBtn.addEventListener('click', toggleTimer);
-        resetBtn.addEventListener('click', resetTimer);
-        newAffirmationBtn.addEventListener('click', () => {
-            const randomIndex = Math.floor(Math.random() * affirmations.length);
-            affirmationText.style.opacity = 0;
-            setTimeout(() => {
-                affirmationText.textContent = `"${affirmations[randomIndex]}"`;
-                affirmationText.style.opacity = 1;
-            }, 500);
+        document.getElementById('new-affirmation').addEventListener('click', () => {
+            const text = affirmations[Math.floor(Math.random() * affirmations.length)];
+            const el = document.getElementById('affirmation');
+            el.style.opacity = 0;
+            el.style.transform = "translateY(5px)";
+            setTimeout(() => { 
+                el.textContent = `"${text}"`; 
+                el.style.opacity = 1; 
+                el.style.transform = "translateY(0)";
+            }, 400);
         });
 
-        volumeControl.addEventListener('input', (e) => {
-            if (masterGain) {
-                masterGain.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.1);
-            }
+        document.getElementById('volume').addEventListener('input', (e) => {
+            if (masterGain) masterGain.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.1);
         });
 
         updateDisplay();
