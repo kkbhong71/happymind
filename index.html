@@ -1,410 +1,710 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HappyMind - 하이엔드 자연 사운드</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 1rem;
-            transition: background 1.5s ease;
-            overflow-x: hidden;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 2.5rem;
-            max-height: 92vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .scroll-area {
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            flex: 1;
-        }
-        .scroll-area::-webkit-scrollbar {
-            display: none;
-        }
-        .timer-circle {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
-        }
-        .pulse {
-            animation: breathe-slow 6s infinite ease-in-out;
-        }
-        @keyframes breathe-slow {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(99, 102, 241, 0.3); }
-        }
-        .sound-card {
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        .sound-card.active {
-            border-color: #6366f1;
-            background: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-        }
-        input[type=range] {
-            cursor: pointer;
-            height: 6px;
-            border-radius: 3px;
-        }
-        @media (max-height: 700px) {
-            header { margin-bottom: 0.5rem; }
-            .timer-section { margin-bottom: 1rem; }
-            #circle-container { width: 8rem; height: 8rem; margin-bottom: 1rem; }
-            #time-left { font-size: 2rem; }
-            .sound-section { margin-bottom: 1rem; }
-            .affirmation-section { min-height: 100px; padding: 1rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HappyMind — Immersive Meditation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0e14;--bg2:#10141e;--card:rgba(255,255,255,0.03);
+  --border:rgba(255,255,255,0.06);--border-hi:rgba(255,255,255,0.12);
+  --t1:#ede8e0;--t2:rgba(237,232,224,0.55);--t3:rgba(237,232,224,0.2);
+  --gold:#d4a853;--gold-g:rgba(212,168,83,0.2);
+  --sage:#7a9e7e;--sage-g:rgba(122,158,126,0.2);
+  --plum:#8b7191;--plum-g:rgba(139,113,145,0.15);
+  --warm:#c17f59;
+}
+html{font-size:16px;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden}
+.serif{font-family:'Playfair Display','Noto Sans KR',serif}
+
+/* INTRO */
+#intro{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 1.2s ease,visibility 1.2s ease}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+#intro-canvas{position:absolute;inset:0;z-index:0}
+.intro-content{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.intro-eyebrow{font-size:0.55rem;letter-spacing:0.5em;color:var(--t3);text-transform:uppercase;opacity:0;animation:iF 1.5s 0.5s ease forwards}
+.intro-title{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:300;letter-spacing:0.06em;color:var(--t1);opacity:0;animation:iF 1.5s 1s ease forwards}
+.intro-sub{font-size:0.85rem;font-weight:200;color:var(--t2);letter-spacing:0.15em;opacity:0;animation:iF 1.5s 1.8s ease forwards}
+.intro-divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;animation:iF 1.5s 2.2s ease forwards}
+.intro-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem;color:var(--t2);max-width:280px;line-height:1.8;opacity:0;animation:iF 1.5s 2.6s ease forwards}
+.intro-btn{margin-top:1.5rem;padding:0.8rem 2.5rem;border:1px solid var(--gold);background:transparent;color:var(--gold);font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;border-radius:999px;font-family:'Noto Sans KR',sans-serif;transition:all 0.5s ease;opacity:0;animation:iF 1.5s 3.2s ease forwards}
+.intro-btn:hover{background:var(--gold-g);transform:scale(1.03)}
+@keyframes iF{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* BG */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:0;pointer-events:none;z-index:0;transition:opacity 2s ease}
+.orb.show{opacity:1}
+.orb-a{width:500px;height:500px;background:radial-gradient(circle,rgba(122,158,126,0.08),transparent);top:-150px;left:-150px;animation:oF1 25s infinite ease-in-out}
+.orb-b{width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,83,0.06),transparent);bottom:-100px;right:-100px;animation:oF2 30s infinite ease-in-out}
+.orb-c{width:350px;height:350px;background:radial-gradient(circle,rgba(139,113,145,0.06),transparent);top:40%;left:60%;animation:oF3 35s infinite ease-in-out}
+@keyframes oF1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,50px)}}
+@keyframes oF2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-40px)}}
+@keyframes oF3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,30px) scale(1.15)}}
+
+/* APP */
+#app{position:relative;z-index:1;max-width:460px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:0 1.25rem;opacity:0;transition:opacity 1s ease 0.5s}
+#app.show{opacity:1}
+.app-head{padding:1.5rem 0 0.5rem;text-align:center}
+.app-head h1{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:300;letter-spacing:0.08em}
+.app-head .tag{font-size:0.5rem;letter-spacing:0.4em;color:var(--t3);margin-top:0.15rem}
+
+/* Tabs */
+.tabs{display:flex;margin:1rem 0 1.25rem;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:0.7rem 0;border:none;background:none;color:var(--t3);font-size:0.68rem;font-weight:500;letter-spacing:0.15em;cursor:pointer;position:relative;transition:color 0.4s;font-family:'Noto Sans KR',sans-serif}
+.tab.on{color:var(--gold)}
+.tab.on::after{content:'';position:absolute;bottom:-1px;left:20%;right:20%;height:1px;background:var(--gold)}
+.pnl{display:none;flex-direction:column;gap:1.25rem;animation:pUp 0.4s ease}
+.pnl.on{display:flex}
+@keyframes pUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* TIMER */
+.ring-wrap{display:flex;justify-content:center;padding:0.5rem 0}
+.ring-box{position:relative;width:210px;height:210px}
+.ring-box svg{width:100%;height:100%;transform:rotate(-90deg)}
+.r-bg{fill:none;stroke:var(--border);stroke-width:3}
+.r-fg{fill:none;stroke:url(#rGrad);stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ring-mid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-time{font-family:'Playfair Display',serif;font-size:3.4rem;font-weight:300;letter-spacing:0.06em;line-height:1}
+.ring-lbl{font-size:0.55rem;color:var(--t3);letter-spacing:0.25em;margin-top:0.3rem;text-transform:uppercase}
+.presets{display:flex;justify-content:center;gap:0.4rem;flex-wrap:wrap}
+.pre{padding:0.35rem 0.9rem;border-radius:999px;border:1px solid var(--border);background:none;color:var(--t3);font-size:0.65rem;cursor:pointer;transition:all 0.3s;font-family:'Noto Sans KR',sans-serif}
+.pre.on,.pre:hover{border-color:var(--gold);color:var(--gold)}
+.ctrls{display:flex;justify-content:center;gap:0.6rem}
+.cb{padding:0.6rem 2rem;border-radius:999px;border:none;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.3s;font-family:'Noto Sans KR',sans-serif;letter-spacing:0.06em}
+.cb-go{background:linear-gradient(135deg,var(--sage),#5a8a5e);color:#fff;box-shadow:0 4px 20px var(--sage-g)}
+.cb-go:hover{box-shadow:0 6px 28px var(--sage-g);transform:translateY(-1px)}
+.cb-rs{background:var(--card);color:var(--t3);border:1px solid var(--border)}
+.aff-card{background:var(--card);border:1px solid var(--border);border-radius:1.25rem;padding:1.5rem 1.25rem;text-align:center;position:relative;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.aff-card::before{content:'\201C';position:absolute;top:0.6rem;left:1rem;font-size:1.8rem;color:rgba(212,168,83,0.1);font-family:serif}
+.aff-day{font-size:0.5rem;color:var(--t3);letter-spacing:0.2em;margin-bottom:0.4rem}
+#aff-txt{font-family:'Playfair Display',serif;font-size:1rem;font-weight:300;font-style:italic;line-height:1.8;color:var(--t1);transition:opacity 0.5s;max-width:92%}
+.aff-next{margin-top:0.8rem;padding:0.3rem 1rem;border-radius:999px;border:1px solid var(--border);background:none;color:var(--t3);font-size:0.55rem;cursor:pointer;transition:all 0.3s;font-family:'Noto Sans KR',sans-serif;letter-spacing:0.12em}
+.aff-next:hover{border-color:var(--gold);color:var(--gold)}
+
+/* SOUND */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:0.9rem 0.4rem;text-align:center;cursor:pointer;transition:all 0.4s;position:relative}
+.sc.on{border-color:var(--gold)}
+.sc-ico{font-size:1.5rem;display:block;margin-bottom:0.3rem;transition:transform 0.3s}
+.sc.on .sc-ico{transform:scale(1.15)}
+.sc-nm{font-size:0.62rem;color:var(--t3);display:block;transition:color 0.3s}
+.sc.on .sc-nm{color:var(--gold)}
+.sv-w{margin-top:0.4rem;height:0;opacity:0;overflow:hidden;transition:all 0.3s}
+.sc.on .sv-w{height:20px;opacity:1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:75%;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--gold);border:none}
+.sv-hint{font-size:0.52rem;color:var(--t3);text-align:center;letter-spacing:0.12em}
+.mv{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0.8rem;background:var(--card);border-radius:999px;border:1px solid var(--border)}
+.mv label{font-size:0.55rem;color:var(--t3);letter-spacing:0.15em;white-space:nowrap}
+.mv input{flex:1}
+
+/* BREATHE */
+.br-modes{display:flex;gap:0.4rem;justify-content:center}
+.br-m{padding:0.35rem 0.9rem;border-radius:999px;border:1px solid var(--border);background:none;color:var(--t3);font-size:0.63rem;cursor:pointer;transition:all 0.3s;font-family:'Noto Sans KR',sans-serif}
+.br-m.on{border-color:var(--sage);color:var(--sage)}
+.br-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem;padding:1rem 0}
+.br-outer{width:220px;height:220px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(122,158,126,0.05),transparent)}
+.br-outer::before,.br-outer::after{content:'';position:absolute;border-radius:50%;border:1px solid rgba(122,158,126,0.08);animation:ripple 4s infinite ease-out}
+.br-outer::before{width:180px;height:180px;animation-delay:0s}
+.br-outer::after{width:220px;height:220px;animation-delay:2s}
+@keyframes ripple{0%{transform:scale(0.8);opacity:0.5}100%{transform:scale(1.2);opacity:0}}
+.br-ball{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--sage),rgba(122,158,126,0.3));box-shadow:0 0 30px var(--sage-g);transition:width 0.5s,height 0.5s,box-shadow 0.5s,background 0.5s;position:relative;z-index:1}
+.br-ball.in{width:150px;height:150px;box-shadow:0 0 60px var(--sage-g)}
+.br-ball.hold{box-shadow:0 0 50px var(--gold-g);background:radial-gradient(circle at 35% 35%,var(--gold),rgba(212,168,83,0.3))}
+.br-ball.out{width:70px;height:70px;box-shadow:0 0 20px var(--plum-g);background:radial-gradient(circle at 35% 35%,var(--plum),rgba(139,113,145,0.3))}
+.br-txt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:1rem;color:var(--t1);pointer-events:none;z-index:2;white-space:nowrap}
+.br-phase{font-size:0.6rem;color:var(--t2);letter-spacing:0.2em}
+
+/* Footer */
+.foot{text-align:center;padding:1.5rem 0 2rem;border-top:1px solid var(--border);margin-top:auto}
+.foot p{font-size:0.5rem;color:var(--t3);letter-spacing:0.25em}
+
+/* Done */
+#done{position:fixed;inset:0;background:rgba(11,14,20,0.95);display:none;align-items:center;justify-content:center;flex-direction:column;gap:1.2rem;z-index:100}
+#done.show{display:flex;animation:fadeIn 0.8s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.done-ico{font-size:3rem;animation:gP 3s infinite ease-in-out}
+@keyframes gP{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.08);opacity:1}}
+.done-msg{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300;text-align:center}
+.done-sub{font-size:0.7rem;color:var(--t2)}
+.done-cls{padding:0.5rem 2rem;border-radius:999px;border:1px solid var(--gold);background:none;color:var(--gold);font-size:0.7rem;cursor:pointer;margin-top:0.5rem;font-family:'Noto Sans KR',sans-serif;transition:all 0.3s}
+@media(max-width:380px){.intro-title{font-size:2.4rem}.ring-box{width:180px;height:180px}.ring-time{font-size:2.8rem}.sg{gap:0.35rem}.sc{padding:0.7rem 0.3rem}}
+</style>
 </head>
-<body id="main-body">
+<body>
 
-    <div id="app" class="glass max-w-md w-full shadow-2xl relative">
-        <div class="scroll-area p-6 md:p-10">
-            <header class="mb-6 md:mb-8 text-center">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-1">HappyMind</h1>
-                <p class="text-gray-500 text-[9px] md:text-[10px] tracking-[0.3em] uppercase">Natural Physics Audio Engine v6.0</p>
-            </header>
+<div id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-content">
+    <div class="intro-eyebrow">Immersive Meditation</div>
+    <h1 class="intro-title serif">HappyMind</h1>
+    <div class="intro-divider"></div>
+    <p class="intro-sub">마음의 평화를 찾는 시간</p>
+    <p class="intro-quote serif">"고요한 마음은 온 우주보다 강하다"</p>
+    <button class="intro-btn" id="intro-enter">명상 공간으로 입장</button>
+  </div>
+</div>
 
-            <!-- Timer Display -->
-            <div class="timer-section mb-8 md:mb-10 text-center">
-                <div id="circle-container" class="w-36 h-36 md:w-44 md:h-44 rounded-full border-[5px] md:border-[6px] border-white/60 mx-auto flex items-center justify-center mb-6 md:mb-8 timer-circle bg-white/20 relative">
-                    <span id="time-left" class="text-4xl md:text-5xl font-light text-gray-800 tracking-tighter">05:00</span>
-                </div>
-                
-                <div class="flex justify-center space-x-3 md:space-x-4">
-                    <button id="start-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-7 md:px-10 py-3 rounded-full font-bold transition-all shadow-lg text-xs md:text-sm active:scale-95">시작하기</button>
-                    <button id="reset-btn" class="bg-white/40 hover:bg-white/60 text-gray-700 px-7 md:px-10 py-3 rounded-full font-bold transition-all text-xs md:text-sm active:scale-95">초기화</button>
-                </div>
-            </div>
+<canvas id="bg-canvas"></canvas>
+<div class="orb orb-a"></div>
+<div class="orb orb-b"></div>
+<div class="orb orb-c"></div>
 
-            <!-- Sound Selection -->
-            <div class="sound-section mb-8 md:mb-10">
-                <p class="text-[10px] md:text-[11px] font-black text-indigo-700 mb-3 md:mb-4 text-left px-1 uppercase tracking-[0.2em]">Atmosphere Engine</p>
-                <div class="grid grid-cols-3 gap-2 md:gap-3">
-                    <button class="sound-card active bg-white/30 p-3 md:p-4 rounded-2xl md:rounded-3xl text-[11px] md:text-sm flex flex-col items-center" data-sound="forest" data-bg="linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)">
-                        <span class="text-xl md:text-2xl mb-1 md:mb-2">🌿</span>바람/숲
-                    </button>
-                    <button class="sound-card bg-white/30 p-3 md:p-4 rounded-2xl md:rounded-3xl text-[11px] md:text-sm flex flex-col items-center" data-sound="ocean" data-bg="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
-                        <span class="text-xl md:text-2xl mb-1 md:mb-2">🌊</span>파도
-                    </button>
-                    <button class="sound-card bg-white/30 p-3 md:p-4 rounded-2xl md:rounded-3xl text-[11px] md:text-sm flex flex-col items-center" data-sound="rain" data-bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                        <span class="text-xl md:text-2xl mb-1 md:mb-2">☔</span>빗소리
-                    </button>
-                </div>
-            </div>
+<div id="app">
+  <header class="app-head"><h1 class="serif">HappyMind</h1><div class="tag">NATURAL SOUND · BREATHE · AFFIRM</div></header>
+  <nav class="tabs">
+    <button class="tab on" data-t="timer">타이머</button>
+    <button class="tab" data-t="sound">사운드</button>
+    <button class="tab" data-t="breathe">호흡 가이드</button>
+  </nav>
 
-            <!-- Affirmation Area -->
-            <div class="affirmation-section bg-white/50 p-5 md:p-7 rounded-[1.5rem] md:rounded-[2rem] mb-6 md:mb-8 shadow-inner min-h-[120px] md:min-h-[140px] flex flex-col justify-center items-center text-center">
-                <p id="affirmation" class="text-xs md:text-sm lg:text-base text-gray-800 leading-relaxed italic font-medium transition-all duration-500">
-                    로딩 중...
-                </p>
-                <button id="new-affirmation" class="mt-4 md:mt-5 text-[9px] md:text-[10px] text-white font-bold bg-indigo-500/80 px-4 py-1.5 rounded-full hover:bg-indigo-600 transition-colors">오늘의 확언</button>
-            </div>
+  <section class="pnl on" id="p-timer">
+    <div class="ring-wrap"><div class="ring-box">
+      <svg viewBox="0 0 200 200"><defs><linearGradient id="rGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:var(--sage)"/><stop offset="100%" style="stop-color:var(--gold)"/></linearGradient></defs>
+      <circle class="r-bg" cx="100" cy="100" r="90"/><circle class="r-fg" id="r-fg" cx="100" cy="100" r="90" stroke-dasharray="565.49" stroke-dashoffset="0"/></svg>
+      <div class="ring-mid"><div class="ring-time" id="t-disp">05:00</div><div class="ring-lbl" id="t-lbl">준비</div></div>
+    </div></div>
+    <div class="presets"><button class="pre" data-m="3">3분</button><button class="pre on" data-m="5">5분</button><button class="pre" data-m="10">10분</button><button class="pre" data-m="15">15분</button><button class="pre" data-m="20">20분</button><button class="pre" data-m="30">30분</button></div>
+    <div class="ctrls"><button class="cb cb-go" id="b-go">명상 시작</button><button class="cb cb-rs" id="b-rs">초기화</button></div>
+    <div class="aff-card"><div class="aff-day" id="aff-day"></div><p id="aff-txt">마음을 가다듬고 있습니다...</p><button class="aff-next" id="b-aff">다음 확언</button></div>
+  </section>
 
-            <!-- Advanced Controls -->
-            <div class="flex items-center justify-between text-[10px] md:text-[11px] text-gray-600 font-bold px-1 mb-6">
-                <span class="uppercase tracking-widest">Acoustic Balance</span>
-                <input type="range" id="volume" min="0" max="0.5" step="0.01" value="0.25" class="w-28 md:w-36 bg-gray-200 rounded-lg appearance-none accent-indigo-600">
-            </div>
-
-            <footer class="mt-4 pt-6 border-t border-white/20 text-center pb-2">
-                <div class="flex flex-col items-center space-y-1">
-                    <p class="text-[9px] md:text-[10px] text-indigo-900/60 tracking-[0.2em] font-bold">Designed & Crafted by K.G.B</p>
-                    <p class="text-[8px] text-gray-400 tracking-widest uppercase font-medium">365 Affirmations Engine v6.1</p>
-                </div>
-            </footer>
-        </div>
+  <section class="pnl" id="p-sound">
+    <div class="sg">
+      <div class="sc on" data-s="forest"><span class="sc-ico">🌿</span><span class="sc-nm">숲·바람</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
+      <div class="sc" data-s="ocean"><span class="sc-ico">🌊</span><span class="sc-nm">파도</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
+      <div class="sc" data-s="rain"><span class="sc-ico">🌧️</span><span class="sc-nm">빗소리</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
+      <div class="sc" data-s="night"><span class="sc-ico">🌙</span><span class="sc-nm">밤·벌레</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
+      <div class="sc" data-s="fire"><span class="sc-ico">🔥</span><span class="sc-nm">모닥불</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
+      <div class="sc" data-s="bowl"><span class="sc-ico">🔔</span><span class="sc-nm">싱잉볼</span><div class="sv-w"><input type="range" min="0" max="1" step="0.01" value="0.7" class="sv"></div></div>
     </div>
+    <div class="sv-hint">여러 사운드를 동시에 선택하여 나만의 분위기를 만드세요</div>
+    <div class="mv"><label>MASTER</label><input type="range" id="m-vol" min="0" max="1" step="0.01" value="0.5"></div>
+  </section>
 
-    <script>
-        // 365개의 확언 리스트 (압축적 구성)
-        const affirmations = [
-            "나는 오늘 충분히 행복할 자격이 있으며, 내 안의 평화와 연결됩니다.",
-            "나의 마음은 깊고 푸른 호수처럼 평온하며 흔들리지 않습니다.",
-            "과거의 짐을 내려놓고, 지금 이 순간의 나를 온전히 사랑합니다.",
-            "나는 내 삶의 창조주이며, 오늘을 긍정의 에너지로 채웁니다.",
-            "숨을 들이마실 때 생명력이 차오르고, 내쉴 때 긴장이 녹아내립니다.",
-            "우주의 소중한 존재인 내 안에 필요한 모든 지혜가 이미 있습니다.",
-            "오늘 마주하는 모든 사건 속에서 감사의 씨앗을 발견합니다.",
-            "내면의 침묵 속에서 진정한 자유와 기쁨을 선택하며 살아갑니다.",
-            "어둠이 지나면 빛이 오듯, 모든 시련은 나를 성장시킵니다.",
-            "나의 존재 자체로 충분히 아름다우며 나만의 길을 걷습니다.",
-            "나 자신을 진심으로 용서하며 더 넓은 세상으로 나아갑니다.",
-            "몸은 건강한 에너지로 가득하며 모든 세포가 활기차게 움직입니다.",
-            "삶에 찾아오는 모든 풍요로움을 감사히 받아들일 준비가 되었습니다.",
-            "불안이 찾아올 때, 고요히 호흡하며 내 안의 중심을 느낍니다.",
-            "원하는 삶을 현실로 만들 수 있는 강력한 의지가 내게 있습니다.",
-            "나의 생각은 맑고 명료하며, 항상 최선의 선택을 내립니다.",
-            "타인과 조화롭게 소통하며 따뜻한 에너지를 주고받습니다.",
-            "가슴은 언제나 희망을 향해 열려 있으며 결코 절망하지 않습니다.",
-            "오늘 마주할 모든 일들을 부드럽고 유연하게 받아들입니다.",
-            "매일은 새로운 기적으로 가득하며 나는 그 기적의 주인공입니다.",
-            "내 안의 고요함 속에서 무한한 영감을 얻고 세상에 펼칩니다.",
-            "비교하지 않는 삶을 통해 진정한 평화와 자존감을 지킵니다.",
-            "호흡은 나를 현재에 머물게 하는 가장 소중한 닻입니다.",
-            "삶의 모든 계절을 사랑하며 변화를 두려워하지 않고 수용합니다.",
-            "친절함은 나 자신을 먼저 치유하고 주변을 밝게 비춥니다.",
-            "오늘 하루를 천천히, 그리고 깊게 음미하며 살아갑니다.",
-            "영혼은 평온의 바다와 같아 어떤 폭풍도 깊은 바닥은 건드리지 못합니다.",
-            "나 스스로를 믿으며 꿈을 향해 나아가는 모든 걸음을 지지합니다.",
-            "가슴은 사랑으로 가득 차 미움과 분노가 머물 자리가 없습니다.",
-            "내 몸의 신호에 귀를 기울이며 필요한 휴식과 영양을 줍니다.",
-            "나는 세상에 단 하나뿐인 빛나는 별이며 나만의 빛을 발산합니다.",
-            "과거는 지나갔고 미래는 오지 않았으니 오직 지금에 충실합니다.",
-            "언어는 따뜻하고 긍정적이며 나 자신과 타인에게 위로가 됩니다.",
-            "어려움 속에서도 긍정의 면을 찾아내는 밝은 눈을 가졌습니다.",
-            "삶은 점점 더 나은 방향으로 흐르고 있으며 그 흐름을 신뢰합니다.",
-            "완벽하지 않아도 괜찮습니다. 부족함 또한 성장의 과정입니다.",
-            "오늘 마주치는 모든 사람들에게 미소와 친절을 건넵니다.",
-            "내 안에는 모든 상처를 스스로 치유할 수 있는 힘이 있습니다.",
-            "풍요가 내 삶으로 자연스럽게 흘러 들어오도록 마음을 엽니다.",
-            "나의 꿈은 현실이 될 가치가 있으며 우주는 나를 돕고 있습니다.",
-            "스트레스를 평화로운 에너지로 전환할 줄 아는 현명함이 있습니다.",
-            "집중력은 예리하고 강하며 목표한 바를 끝까지 완수합니다.",
-            "작은 것에도 감사할 줄 아는 마음이 매 순간을 축복으로 만듭니다.",
-            "인내심은 나무처럼 뿌리 내려 어떤 시련도 견뎌냅니다.",
-            "진실된 모습으로 살아갈 때 가장 큰 행복과 안정감을 느낍니다.",
-            "창의성은 마르지 않는 샘물처럼 끊임없이 솟아오릅니다.",
-            "내 삶의 모든 책임이 나에게 있음을 인정하고 기쁘게 받아들입니다.",
-            "나의 존재는 타인에게 영감이 되며 긍정적인 변화를 일으킵니다.",
-            "어제의 실수에 얽매이지 않고 새로운 오늘을 선물로 받습니다.",
-            "마음속 정원에는 매일 사랑과 평화의 꽃이 피어납니다.",
-            // ... (생략된 315개의 문장들은 날짜 로직을 통해 다양하게 변주되어 표시됩니다)
-            "나는 나를 있는 그대로 수용하며 세상의 풍요를 누립니다.",
-            "나의 미소는 세상을 밝히는 가장 강력한 에너지입니다.",
-            "모든 상황 속에서 나는 평온을 선택할 능력이 있습니다.",
-            "나의 삶은 사랑과 기쁨으로 가득 찬 축제입니다.",
-            "나는 오늘 내가 할 수 있는 최선을 다했으며 결과에 평온합니다.",
-            "내 안의 빛이 나를 바른 길로 인도하고 있습니다.",
-            "나는 매일 조금씩 더 지혜롭고 자비로운 사람이 됩니다.",
-            "내 존재는 그 자체로 우주의 완벽한 신비입니다.",
-            "나는 평화롭습니다. 나는 행복합니다. 나는 온전합니다."
-        ];
+  <section class="pnl" id="p-breathe">
+    <div class="br-modes"><button class="br-m on" data-bm="478">4-7-8 호흡</button><button class="br-m" data-bm="box">박스 호흡</button><button class="br-m" data-bm="calm">고요 호흡</button></div>
+    <div class="br-wrap"><div class="br-outer"><div class="br-ball" id="br-ball"></div><div class="br-txt" id="br-txt">시작하기</div></div><div class="br-phase" id="br-phase">탭하여 시작</div></div>
+    <div class="ctrls"><button class="cb cb-go" id="b-br">호흡 시작</button></div>
+  </section>
 
-        // 365개를 위한 추가 문장 생성기 (부족한 부분을 보완하기 위한 상황별 변주 로직)
-        const situations = ["아침의 시작", "업무의 몰입", "관계의 회복", "자신의 신뢰", "불안의 해소", "성취의 기쁨", "저녁의 안식"];
-        
-        function getAffirmationOfTheDay() {
-            const now = new Date();
-            const start = new Date(now.getFullYear(), 0, 0);
-            const diff = now - start;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const dayOfYear = Math.floor(diff / oneDay);
-            
-            // 365개 리스트가 부족할 경우 인덱스 순환 처리
-            const index = dayOfYear % affirmations.length;
-            return affirmations[index];
-        }
+  <footer class="foot"><p>Designed & Crafted by K.G.B</p><p style="margin-top:0.2rem;letter-spacing:0.35em;font-size:0.42rem;color:rgba(255,255,255,0.08)">HAPPYMIND v7.5 · 365 AFFIRMATIONS</p></footer>
+</div>
 
-        let timeLeft = 300;
-        let timerId = null;
-        let isRunning = false;
-        let audioCtx = null;
-        let masterGain = null;
-        let coreNodes = [];
-        let birdTimers = [];
-        let currentSoundType = 'forest';
+<div id="done"><div class="done-ico">🪷</div><div class="done-msg serif">고요한 명상을 마쳤습니다</div><div class="done-sub" id="done-dur"></div><button class="done-cls" id="b-done-cls">돌아가기</button></div>
 
-        function initAudio() {
-            if (audioCtx) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            masterGain = audioCtx.createGain();
-            masterGain.gain.setValueAtTime(document.getElementById('volume').value, audioCtx.currentTime);
-            masterGain.connect(audioCtx.destination);
-        }
+<script>
+// ═══ INTRO CANVAS ═══
+(function(){
+  var c=document.getElementById('intro-canvas'),x=c.getContext('2d'),W,H;
+  function rs(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  window.addEventListener('resize',rs);rs();
+  var rings=[];for(var i=0;i<6;i++)rings.push({r:25+i*40,phase:i*0.6});
+  function draw(){
+    if(document.getElementById('intro').classList.contains('hide'))return;
+    x.clearRect(0,0,W,H);var t=Date.now()*0.001,cx=W/2,cy=H/2;
+    rings.forEach(function(ring){
+      var pulse=1+0.08*Math.sin(t*1.2+ring.phase);
+      var r=ring.r*pulse;
+      var alpha=0.035+0.025*Math.sin(t*0.8+ring.phase);
+      x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);
+      x.strokeStyle='rgba(212,168,83,'+alpha+')';x.lineWidth=0.5;x.stroke();
+    });
+    var grd=x.createRadialGradient(cx,cy,0,cx,cy,60);
+    grd.addColorStop(0,'rgba(122,158,126,'+(0.04+0.02*Math.sin(t*0.6))+')');
+    grd.addColorStop(1,'transparent');
+    x.fillStyle=grd;x.fillRect(cx-80,cy-80,160,160);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-        // 사운드 엔진 로직 (기존 유지)
-        function createForestWind() {
-            const bufferSize = audioCtx.sampleRate * 10;
-            const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
-            for (let channel = 0; channel < 2; channel++) {
-                const data = buffer.getChannelData(channel);
-                let lastOut = 0;
-                for (let i = 0; i < bufferSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    data[i] = (lastOut + (0.01 * white)) / 1.01;
-                    lastOut = data[i];
-                    data[i] *= 1.5;
-                }
-            }
-            const source = audioCtx.createBufferSource();
-            source.buffer = buffer; source.loop = true;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = "lowpass"; filter.frequency.value = 250;
-            const lfo = audioCtx.createOscillator();
-            const lfoGain = audioCtx.createGain();
-            lfo.frequency.value = 0.04; lfoGain.gain.value = 100;
-            lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
-            lfo.start();
-            source.connect(filter).connect(masterGain);
-            coreNodes.push(source, lfo, lfoGain, filter);
-            source.start();
-        }
+document.getElementById('intro-enter').addEventListener('click',function(){
+  document.getElementById('intro').classList.add('hide');
+  document.getElementById('app').classList.add('show');
+  document.querySelectorAll('.orb').forEach(function(o){o.classList.add('show')});
+  initBg();
+});
 
-        function createBird() {
-            if (!isRunning || currentSoundType !== 'forest') return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            const filter = audioCtx.createBiquadFilter();
-            const baseFreq = 2200 + Math.random() * 800;
-            osc.frequency.setValueAtTime(baseFreq, now);
-            osc.frequency.exponentialRampToValueAtTime(baseFreq + 600, now + 0.1);
-            osc.frequency.exponentialRampToValueAtTime(baseFreq - 200, now + 0.3);
-            filter.type = "bandpass"; filter.frequency.value = baseFreq + 300; filter.Q.value = 5;
-            gainNode.gain.setValueAtTime(0, now);
-            gainNode.gain.linearRampToValueAtTime(0.08, now + 0.05);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-            const panner = audioCtx.createStereoPanner();
-            panner.pan.value = Math.random() * 2 - 1;
-            osc.connect(filter).connect(panner).connect(gainNode).connect(masterGain);
-            osc.start(now); osc.stop(now + 0.5);
-            birdTimers.push(setTimeout(createBird, 3000 + Math.random() * 4000));
-        }
+function initBg(){
+  var c=document.getElementById('bg-canvas'),x=c.getContext('2d'),W,H;
+  function rs(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  window.addEventListener('resize',rs);rs();
+  var dots=[];
+  for(var i=0;i<50;i++)dots.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.2,vx:(Math.random()-0.5)*0.1,vy:(Math.random()-0.5)*0.08,o:Math.random()*0.2+0.03,ph:Math.random()*6.28});
+  function draw(){
+    x.clearRect(0,0,W,H);var t=Date.now()*0.001;
+    dots.forEach(function(d){
+      d.x+=d.vx;d.y+=d.vy;
+      if(d.x<0)d.x=W;if(d.x>W)d.x=0;if(d.y<0)d.y=H;if(d.y>H)d.y=0;
+      var fl=d.o*(0.5+0.5*Math.sin(t*0.4+d.ph));
+      x.beginPath();x.arc(d.x,d.y,d.r,0,6.28);
+      x.fillStyle='rgba(212,168,83,'+fl+')';x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
 
-        function createRealisticRain() {
-            const bufferSize = audioCtx.sampleRate * 5;
-            const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
-            for (let channel = 0; channel < 2; channel++) {
-                const data = buffer.getChannelData(channel);
-                for (let i = 0; i < bufferSize; i++) {
-                    let p = Math.random();
-                    let background = (Math.random() * 2 - 1) * 0.012;
-                    let drop = 0; if (p > 0.999) drop = (Math.random() * 2 - 1) * 0.25;
-                    data[i] = background + drop;
-                }
-            }
-            const source = audioCtx.createBufferSource();
-            source.buffer = buffer; source.loop = true;
-            const lowFilter = audioCtx.createBiquadFilter();
-            lowFilter.type = "lowpass"; lowFilter.frequency.value = 1800;
-            source.connect(lowFilter).connect(masterGain);
-            source.start();
-            coreNodes.push(source, lowFilter);
-        }
+// ═══ TABS ═══
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on')});
+    document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
+    t.classList.add('on');
+    document.getElementById('p-'+t.dataset.t).classList.add('on');
+  });
+});
 
-        function createOceanEngine() {
-            const bufferSize = audioCtx.sampleRate * 6;
-            const buffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
-            for (let c = 0; c < 2; c++) {
-                const d = buffer.getChannelData(c);
-                let lastOut = 0;
-                for (let i = 0; i < d.length; i++) {
-                    const white = Math.random() * 2 - 1;
-                    d[i] = (lastOut + (0.02 * white)) / 1.02;
-                    lastOut = d[i]; d[i] *= 2.0;
-                }
-            }
-            const source = audioCtx.createBufferSource();
-            source.buffer = buffer; source.loop = true;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = "lowpass"; filter.frequency.value = 300;
-            const gainNode = audioCtx.createGain();
-            function animateWave() {
-                if (!isRunning || currentSoundType !== 'ocean') return;
-                const t = audioCtx.currentTime;
-                gainNode.gain.cancelScheduledValues(t);
-                gainNode.gain.exponentialRampToValueAtTime(0.35, t + 4.5);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, t + 10);
-                setTimeout(animateWave, 10000);
-            }
-            source.connect(filter).connect(gainNode).connect(masterGain);
-            source.start();
-            coreNodes.push(source, filter, gainNode);
-            animateWave();
-        }
+// ═══ 365 AFFIRMATIONS ═══
+var affs=["나는 오늘 충분히 행복할 자격이 있으며, 내 안의 평화와 연결됩니다.","나의 마음은 깊고 푸른 호수처럼 평온하며 흔들리지 않습니다.","과거의 짐을 내려놓고, 지금 이 순간의 나를 온전히 사랑합니다.","나는 내 삶의 창조주이며, 오늘을 긍정의 에너지로 채웁니다.","숨을 들이마실 때 생명력이 차오르고, 내쉴 때 긴장이 녹아내립니다.","우주의 소중한 존재인 내 안에 필요한 모든 지혜가 이미 있습니다.","오늘 마주하는 모든 사건 속에서 감사의 씨앗을 발견합니다.","내면의 침묵 속에서 진정한 자유와 기쁨을 선택하며 살아갑니다.","어둠이 지나면 빛이 오듯, 모든 시련은 나를 성장시킵니다.","나의 존재 자체로 충분히 아름다우며 나만의 길을 걷습니다.","나 자신을 진심으로 용서하며 더 넓은 세상으로 나아갑니다.","몸은 건강한 에너지로 가득하며 모든 세포가 활기차게 움직입니다.","삶에 찾아오는 모든 풍요로움을 감사히 받아들일 준비가 되었습니다.","불안이 찾아올 때, 고요히 호흡하며 내 안의 중심을 느낍니다.","원하는 삶을 현실로 만들 수 있는 강력한 의지가 내게 있습니다.","나의 생각은 맑고 명료하며, 항상 최선의 선택을 내립니다.","타인과 조화롭게 소통하며 따뜻한 에너지를 주고받습니다.","가슴은 언제나 희망을 향해 열려 있으며 결코 절망하지 않습니다.","오늘 마주할 모든 일들을 부드럽고 유연하게 받아들입니다.","매일은 새로운 기적으로 가득하며 나는 그 기적의 주인공입니다.","내 안의 고요함 속에서 무한한 영감을 얻고 세상에 펼칩니다.","비교하지 않는 삶을 통해 진정한 평화와 자존감을 지킵니다.","호흡은 나를 현재에 머물게 하는 가장 소중한 닻입니다.","삶의 모든 계절을 사랑하며 변화를 두려워하지 않고 수용합니다.","친절함은 나 자신을 먼저 치유하고 주변을 밝게 비춥니다.","오늘 하루를 천천히, 그리고 깊게 음미하며 살아갑니다.","영혼은 평온의 바다와 같아 어떤 폭풍도 깊은 바닥은 건드리지 못합니다.","나 자신을 믿으며 꿈을 향해 나아가는 모든 걸음을 지지합니다.","가슴은 사랑으로 가득 차 미움과 분노가 머물 자리가 없습니다.","내 몸의 신호에 귀를 기울이며 필요한 휴식과 영양을 줍니다.","나는 세상에 단 하나뿐인 빛나는 별이며 나만의 빛을 발산합니다.","과거는 지나갔고 미래는 오지 않았으니 오직 지금에 충실합니다.","언어는 따뜻하고 긍정적이며 나 자신과 타인에게 위로가 됩니다.","어려움 속에서도 긍정의 면을 찾아내는 밝은 눈을 가졌습니다.","삶은 점점 더 나은 방향으로 흐르고 있으며 그 흐름을 신뢰합니다.","완벽하지 않아도 괜찮습니다. 부족함 또한 성장의 과정입니다.","오늘 마주치는 모든 사람들에게 미소와 친절을 건넵니다.","내 안에는 모든 상처를 스스로 치유할 수 있는 힘이 있습니다.","풍요가 내 삶으로 자연스럽게 흘러 들어오도록 마음을 엽니다.","나의 꿈은 현실이 될 가치가 있으며 우주는 나를 돕고 있습니다.","스트레스를 평화로운 에너지로 전환할 줄 아는 현명함이 있습니다.","집중력은 예리하고 강하며 목표한 바를 끝까지 완수합니다.","작은 것에도 감사할 줄 아는 마음이 매 순간을 축복으로 만듭니다.","인내심은 나무처럼 뿌리 내려 어떤 시련도 견뎌냅니다.","진실된 모습으로 살아갈 때 가장 큰 행복과 안정감을 느낍니다.","창의성은 마르지 않는 샘물처럼 끊임없이 솟아오릅니다.","내 삶의 모든 책임이 나에게 있음을 인정하고 기쁘게 받아들입니다.","나의 존재는 타인에게 영감이 되며 긍정적인 변화를 일으킵니다.","어제의 실수에 얽매이지 않고 새로운 오늘을 선물로 받습니다.","마음속 정원에는 매일 사랑과 평화의 꽃이 피어납니다.","내가 걷는 이 길은 정확히 내가 가야 할 길입니다.","두려움은 성장의 문 앞에 서 있다는 신호일 뿐입니다.","나의 직관은 나를 올바른 방향으로 안내하고 있습니다.","세상의 소음 속에서도 내 안의 고요함을 찾을 수 있습니다.","지금 이 순간, 나에게 필요한 모든 것이 이미 갖추어져 있습니다.","실패는 배움이며, 배움은 성장의 가장 아름다운 형태입니다.","나는 받을 자격이 있는 사랑과 존중을 기꺼이 받아들입니다.","내 마음의 평화는 외부 상황에 좌우되지 않는 내면의 선택입니다.","오늘의 작은 한 걸음이 내일의 위대한 여정을 만듭니다.","나는 충분히 강하고, 충분히 지혜롭고, 충분히 사랑받고 있습니다.","감사의 마음으로 아침을 열면 하루 전체가 빛으로 물듭니다.","변화를 두려워하기보다 성장의 기회로 환영합니다.","나의 호흡 하나하나가 생명의 리듬과 조화를 이루고 있습니다.","타인의 시선이 아닌 나의 내면의 소리에 귀를 기울입니다.","이 세상에 나와 똑같은 사람은 없으며 그것이 나의 가장 큰 선물입니다.","어떤 감정도 영원하지 않습니다. 모든 것은 지나갑니다.","지금 느끼는 불편함은 더 넓은 세계로 나아가는 통과의례입니다.","나의 몸은 매 순간 나를 지켜주는 신성한 성전입니다.","웃음은 가장 강력한 치유의 약이며 나는 매일 웃을 이유를 찾습니다.","오늘 하루도 나에게 주어진 소중한 선물이며 감사히 받아들입니다.","고요함 속에서 나의 진정한 목소리가 들려옵니다.","나는 어떤 상황에서도 평온을 선택할 수 있는 힘이 있습니다.","사랑은 내 존재의 근원이며 내가 세상에 나누는 에너지입니다.","내가 상상할 수 있는 모든 아름다운 것들이 현실이 될 수 있습니다.","하늘의 구름처럼 생각을 관찰하되 붙잡지 않습니다.","나의 내면에는 무한한 잠재력의 우주가 펼쳐져 있습니다.","자비로운 마음으로 나 자신과 세상을 바라봅니다.","지금 여기에서, 이 호흡에서, 모든 것이 시작됩니다.","나는 매일 조금씩 더 나은 사람이 되어가고 있습니다.","내 안의 빛이 나를 바른 길로 인도하고 있습니다.","내 존재는 그 자체로 우주의 완벽한 신비입니다.","나는 평화롭습니다. 나는 행복합니다. 나는 온전합니다.","바람이 나뭇잎을 쓸어가듯 걱정도 자연스럽게 흘려보냅니다.","내 안의 용기는 산처럼 견고하고 바다처럼 깊습니다.","오늘의 나는 어제보다 한 뼘 더 성장한 존재입니다.","고요한 물이 깊은 것처럼 내면의 힘은 조용히 빛납니다.","세상의 모든 아름다움은 내 안에서도 발견됩니다.","나는 흔들리되 쓰러지지 않는 갈대와 같습니다.","매 순간이 새로운 시작이며 가능성의 문이 열립니다.","하늘을 올려다보면 나의 근심이 얼마나 작은지 알게 됩니다.","자연의 일부인 나는 계절처럼 끊임없이 새로워집니다.","사소한 일상 속에 숨겨진 기적을 알아차리는 눈이 있습니다.","내가 뿌린 친절의 씨앗은 반드시 아름다운 꽃으로 돌아옵니다.","지금 이 순간의 평화로움이 영원히 나와 함께합니다.","나의 미소는 세상을 밝히는 가장 강력한 에너지입니다.","나는 나를 있는 그대로 수용하며 세상의 풍요를 누립니다.","모든 상황 속에서 나는 평온을 선택할 능력이 있습니다.","나의 삶은 사랑과 기쁨으로 가득 찬 축제입니다.","나는 오늘 내가 할 수 있는 최선을 다했으며 결과에 평온합니다."];
+var themes=["평화","감사","용기","사랑","성장","치유","자유","지혜","기쁨","믿음","고요","빛"];
+var tpls=[function(t){return"오늘 나는 "+t+"의 에너지를 온전히 받아들이며 하루를 시작합니다."},function(t){return t+"은 내 안에 이미 존재하며, 그것을 세상에 나눕니다."},function(t){return"깊은 호흡과 함께 "+t+"이 내 전신으로 퍼져 나갑니다."},function(t){return t+"의 씨앗을 심으며 내일의 풍요를 기대합니다."},function(t){return t+"으로 가득 찬 이 순간이 나의 가장 큰 축복입니다."},function(t){return"나는 "+t+"을 선택하며 두려움을 내려놓습니다."},function(t){return t+"의 물결이 내 마음의 모든 주름을 부드럽게 펴줍니다."},function(t){return"내 안의 "+t+"이 세상을 비추는 등불이 됩니다."},function(t){return t+"과 함께하는 오늘이 내 인생에서 가장 아름다운 날입니다."},function(t){return"매 호흡마다 "+t+"이 깊어지고 내면이 단단해집니다."},function(t){return t+"의 향기가 내 하루 전체를 감싸안습니다."},function(t){return"나는 "+t+"을 통해 나 자신을 더 깊이 이해합니다."},function(t){return t+"은 가장 조용한 곳에서 가장 크게 울려 퍼집니다."},function(t){return"내 삶의 모든 순간에 "+t+"의 빛이 함께합니다."},function(t){return t+"의 강물에 몸을 맡기며 흐름을 신뢰합니다."},function(t){return"세상이 어지러울수록 내 안의 "+t+"은 더욱 깊어집니다."},function(t){return t+"은 내가 세상에 줄 수 있는 가장 값진 선물입니다."},function(t){return"오늘 밤 잠들 때 "+t+"이 나를 포근히 감싸줄 것입니다."},function(t){return t+"의 날개를 달고 더 넓은 세상으로 비상합니다."},function(t){return"내 영혼 깊은 곳에서 "+t+"의 샘물이 솟아오릅니다."},function(t){return t+"은 나의 본질이며 결코 사라지지 않는 영원한 빛입니다."},function(t){return"나는 "+t+"을 품고 살아가는 것 자체가 기적임을 압니다."}];
+while(affs.length<365){var ti=affs.length%themes.length;var tp=affs.length%tpls.length;affs.push(tpls[tp](themes[ti]))}
 
-        function startSoundEngine() {
-            initAudio();
-            stopSoundEngine();
-            if (currentSoundType === 'forest') { createForestWind(); createBird(); } 
-            else if (currentSoundType === 'ocean') { createOceanEngine(); } 
-            else { createRealisticRain(); }
-        }
+function dayOfYear(){var n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/864e5)}
+var affI=dayOfYear()-1;
+function showAff(i){var el=document.getElementById('aff-txt');el.style.opacity='0';setTimeout(function(){el.textContent=affs[i%365];el.style.opacity='1'},400)}
+document.getElementById('aff-day').textContent='Day '+dayOfYear()+' / 365';
+window.addEventListener('load',function(){showAff(affI)});
+document.getElementById('b-aff').addEventListener('click',function(){affI=(affI+1)%365;showAff(affI)});
 
-        function stopSoundEngine() {
-            coreNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-            birdTimers.forEach(clearTimeout);
-            coreNodes = []; birdTimers = [];
-        }
+// ═══════════════════════════════════════
+// AUDIO ENGINE — REBUILT
+// ═══════════════════════════════════════
+var ctx=null,master=null;
+var live={};
 
-        function updateDisplay() {
-            const m = Math.floor(timeLeft / 60);
-            const s = timeLeft % 60;
-            document.getElementById('time-left').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
+function AC(){
+  if(!ctx){
+    ctx=new(window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();
+    master.gain.value=parseFloat(document.getElementById('m-vol').value);
+    var comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-20;comp.knee.value=25;comp.ratio.value=4;
+    comp.attack.value=0.005;comp.release.value=0.2;
+    master.connect(comp).connect(ctx.destination);
+  }
+  if(ctx.state==='suspended')ctx.resume();
+  return ctx;
+}
 
-        // 초기 실행: 오늘의 확언 설정
-        window.onload = () => {
-            document.getElementById('affirmation').textContent = `"${getAffirmationOfTheDay()}"`;
-        };
+function noiseBuf(sec,type){
+  var c=AC(),len=c.sampleRate*sec,buf=c.createBuffer(2,len,c.sampleRate);
+  for(var ch=0;ch<2;ch++){
+    var d=buf.getChannelData(ch),l=0;
+    for(var i=0;i<len;i++){
+      var w=Math.random()*2-1;
+      if(type==='brown'){d[i]=(l+0.02*w)/1.02;l=d[i];d[i]*=3.5}
+      else if(type==='pink'){l=(l*0.997)+(w*0.003);d[i]=l*25}
+      else d[i]=w;
+    }
+  }
+  return buf;
+}
 
-        document.getElementById('start-btn').addEventListener('click', () => {
-            if (isRunning) {
-                clearInterval(timerId); stopSoundEngine();
-                document.getElementById('start-btn').textContent = '다시 시작';
-                document.getElementById('circle-container').classList.remove('pulse');
-            } else {
-                startSoundEngine();
-                timerId = setInterval(() => {
-                    timeLeft--; updateDisplay();
-                    if (timeLeft <= 0) { clearInterval(timerId); stopSoundEngine(); isRunning = false; }
-                }, 1000);
-                document.getElementById('start-btn').textContent = '일시 정지';
-                document.getElementById('circle-container').classList.add('pulse');
-            }
-            isRunning = !isRunning;
-        });
+// ── FOREST ──
+function mkForest(gn){
+  var c=AC(),N=[],T=[];
+  var wb=c.createBufferSource();wb.buffer=noiseBuf(8,'brown');wb.loop=true;
+  var wf=c.createBiquadFilter();wf.type='lowpass';wf.frequency.value=180;
+  var wg=c.createGain();wg.gain.value=0.6;
+  var l1=c.createOscillator();l1.frequency.value=0.03;var l1g=c.createGain();l1g.gain.value=70;
+  l1.connect(l1g).connect(wf.frequency);l1.start();
+  wb.connect(wf).connect(wg).connect(gn);wb.start();N.push(wb,l1);
+  var rb=c.createBufferSource();rb.buffer=noiseBuf(6,'pink');rb.loop=true;
+  var rf=c.createBiquadFilter();rf.type='bandpass';rf.frequency.value=700;rf.Q.value=0.6;
+  var rg=c.createGain();rg.gain.value=0.12;
+  rb.connect(rf).connect(rg).connect(gn);rb.start();N.push(rb);
+  function bird(){
+    if(!live.forest)return;var t=c.currentTime;
+    var f=2000+Math.random()*1400;var dur=0.15+Math.random()*0.25;
+    var notes=1+Math.floor(Math.random()*3);
+    for(var n=0;n<notes;n++){
+      var off=n*0.18;
+      var o=c.createOscillator();var g=c.createGain();var p=c.createStereoPanner();p.pan.value=Math.random()*2-1;
+      o.frequency.setValueAtTime(f*(1+n*0.1),t+off);
+      o.frequency.exponentialRampToValueAtTime(f*(1.2+n*0.15),t+off+dur*0.4);
+      o.frequency.exponentialRampToValueAtTime(f*(0.9+n*0.05),t+off+dur);
+      g.gain.setValueAtTime(0,t+off);g.gain.linearRampToValueAtTime(0.04,t+off+0.015);
+      g.gain.setValueAtTime(0.04,t+off+dur*0.6);g.gain.linearRampToValueAtTime(0,t+off+dur);
+      o.connect(p).connect(g).connect(gn);o.start(t+off);o.stop(t+off+dur+0.01);
+    }
+    T.push(setTimeout(bird,2000+Math.random()*6000));
+  }
+  T.push(setTimeout(bird,1000+Math.random()*2000));
+  return{nodes:N,ids:T};
+}
 
-        document.getElementById('reset-btn').addEventListener('click', () => {
-            clearInterval(timerId); stopSoundEngine();
-            timeLeft = 300; isRunning = false; updateDisplay();
-            document.getElementById('start-btn').textContent = '시작하기';
-            document.getElementById('circle-container').classList.remove('pulse');
-        });
+// ── OCEAN ──
+function mkOcean(gn){
+  var c=AC(),N=[],T=[];
+  var ob=c.createBufferSource();ob.buffer=noiseBuf(10,'brown');ob.loop=true;
+  var of1=c.createBiquadFilter();of1.type='lowpass';of1.frequency.value=220;
+  var og=c.createGain();og.gain.value=0.3;
+  ob.connect(of1).connect(og).connect(gn);ob.start();N.push(ob);
+  var fb=c.createBufferSource();fb.buffer=noiseBuf(6,'white');fb.loop=true;
+  var fh=c.createBiquadFilter();fh.type='highpass';fh.frequency.value=2800;
+  var fg=c.createGain();fg.gain.value=0;
+  fb.connect(fh).connect(fg).connect(gn);fb.start();N.push(fb);
+  var o2=c.createBufferSource();o2.buffer=noiseBuf(8,'brown');o2.loop=true;
+  var o2f=c.createBiquadFilter();o2f.type='lowpass';o2f.frequency.value=300;
+  var o2g=c.createGain();o2g.gain.value=0.15;
+  var o2p=c.createStereoPanner();o2p.pan.value=-0.4;
+  o2.connect(o2f).connect(o2g).connect(o2p).connect(gn);o2.start();N.push(o2);
+  function wave(){
+    if(!live.ocean)return;
+    var t=c.currentTime,p=7+Math.random()*5,pk=p*0.35;
+    og.gain.cancelScheduledValues(t);og.gain.setValueAtTime(og.gain.value,t);
+    og.gain.linearRampToValueAtTime(0.7,t+pk);og.gain.linearRampToValueAtTime(0.12,t+p);
+    fg.gain.cancelScheduledValues(t);fg.gain.setValueAtTime(0,t);
+    fg.gain.linearRampToValueAtTime(0,t+pk*0.7);
+    fg.gain.linearRampToValueAtTime(0.07,t+pk);fg.gain.linearRampToValueAtTime(0,t+pk+2.5);
+    o2g.gain.cancelScheduledValues(t);o2g.gain.setValueAtTime(o2g.gain.value,t);
+    o2g.gain.linearRampToValueAtTime(0.4,t+pk+1);o2g.gain.linearRampToValueAtTime(0.06,t+p+1);
+    T.push(setTimeout(wave,p*1000));
+  }
+  wave();
+  return{nodes:N,ids:T};
+}
 
-        document.querySelectorAll('.sound-card').forEach(card => {
-            card.addEventListener('click', () => {
-                currentSoundType = card.dataset.sound;
-                document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                document.getElementById('main-body').style.background = card.dataset.bg;
-                if (isRunning) startSoundEngine();
-            });
-        });
+// ── RAIN ──
+function mkRain(gn){
+  var c=AC(),N=[],T=[];
+  var rb=c.createBufferSource();rb.buffer=noiseBuf(8,'pink');rb.loop=true;
+  var rlp=c.createBiquadFilter();rlp.type='lowpass';rlp.frequency.value=2800;
+  var rg=c.createGain();rg.gain.value=0.3;
+  rb.connect(rlp).connect(rg).connect(gn);rb.start();N.push(rb);
+  var db=c.createBufferSource();db.buffer=noiseBuf(5,'white');db.loop=true;
+  var dbp=c.createBiquadFilter();dbp.type='bandpass';dbp.frequency.value=5500;dbp.Q.value=0.7;
+  var dg=c.createGain();dg.gain.value=0.05;
+  db.connect(dbp).connect(dg).connect(gn);db.start();N.push(db);
+  function drop(){
+    if(!live.rain)return;var t=c.currentTime;
+    var len=Math.floor(c.sampleRate*0.06);
+    var buf=c.createBuffer(1,len,c.sampleRate);var d=buf.getChannelData(0);
+    for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*0.01));
+    var s=c.createBufferSource();s.buffer=buf;
+    var g=c.createGain();g.gain.value=0.02+Math.random()*0.04;
+    var p=c.createStereoPanner();p.pan.value=Math.random()*2-1;
+    var hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=2500+Math.random()*3000;
+    s.connect(hp).connect(p).connect(g).connect(gn);s.start();
+    T.push(setTimeout(drop,40+Math.random()*180));
+  }
+  drop();
+  function thunder(){
+    if(!live.rain)return;var t=c.currentTime;
+    var o=c.createOscillator();o.type='sine';o.frequency.value=30+Math.random()*25;
+    var og=c.createGain();
+    og.gain.setValueAtTime(0,t);og.gain.linearRampToValueAtTime(0.1,t+1);
+    og.gain.linearRampToValueAtTime(0.06,t+2.5);og.gain.linearRampToValueAtTime(0,t+5);
+    o.connect(og).connect(gn);o.start(t);o.stop(t+5.1);
+    var nb=c.createBufferSource();nb.buffer=noiseBuf(5,'brown');
+    var nlp=c.createBiquadFilter();nlp.type='lowpass';nlp.frequency.value=80;
+    var ng=c.createGain();
+    ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.07,t+1.2);ng.gain.linearRampToValueAtTime(0,t+4.5);
+    nb.connect(nlp).connect(ng).connect(gn);nb.start(t);nb.stop(t+5);
+    T.push(setTimeout(thunder,20000+Math.random()*40000));
+  }
+  T.push(setTimeout(thunder,8000+Math.random()*12000));
+  return{nodes:N,ids:T};
+}
 
-        document.getElementById('new-affirmation').addEventListener('click', () => {
-            const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-            const el = document.getElementById('affirmation');
-            el.style.opacity = 0;
-            setTimeout(() => { 
-                el.textContent = `"${randomAffirmation}"`; 
-                el.style.opacity = 1; 
-            }, 300);
-        });
+// ── NIGHT (FIXED — scheduled gain envelopes for crickets) ──
+function mkNight(gn){
+  var c=AC(),N=[],T=[];
+  // Soft ambient
+  var ab=c.createBufferSource();ab.buffer=noiseBuf(10,'brown');ab.loop=true;
+  var af=c.createBiquadFilter();af.type='lowpass';af.frequency.value=100;
+  var ag=c.createGain();ag.gain.value=0.2;
+  ab.connect(af).connect(ag).connect(gn);ab.start();N.push(ab);
 
-        document.getElementById('volume').addEventListener('input', (e) => {
-            if (masterGain) masterGain.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.1);
-        });
+  // Cricket type A — fast chirps with scheduled gain on/off
+  function cricketA(){
+    if(!live.night)return;
+    var t=c.currentTime;
+    var freq=4000+Math.random()*2000;
+    var pan=Math.random()*2-1;
+    var count=3+Math.floor(Math.random()*5);
+    var gap=0.04+Math.random()*0.02;
+    var dur=0.02;
+    for(var i=0;i<count;i++){
+      var st=t+i*(dur+gap);
+      var o=c.createOscillator();o.type='sine';o.frequency.value=freq+(Math.random()-0.5)*200;
+      var g=c.createGain();
+      g.gain.setValueAtTime(0,st);
+      g.gain.linearRampToValueAtTime(0.025,st+0.003);
+      g.gain.setValueAtTime(0.025,st+dur-0.003);
+      g.gain.linearRampToValueAtTime(0,st+dur);
+      var p=c.createStereoPanner();p.pan.value=pan;
+      o.connect(p).connect(g).connect(gn);o.start(st);o.stop(st+dur+0.01);
+    }
+    T.push(setTimeout(cricketA,400+Math.random()*1500));
+  }
+  cricketA();
 
-        updateDisplay();
-    </script>
+  // Cricket type B — slower trill
+  function cricketB(){
+    if(!live.night)return;
+    var t=c.currentTime;
+    var freq=3200+Math.random()*800;
+    var pan=Math.random()*2-1;
+    var count=8+Math.floor(Math.random()*10);
+    for(var i=0;i<count;i++){
+      var st=t+i*0.06;
+      var o=c.createOscillator();o.type='sine';o.frequency.value=freq;
+      var g=c.createGain();
+      g.gain.setValueAtTime(0,st);
+      g.gain.linearRampToValueAtTime(0.015,st+0.005);
+      g.gain.setValueAtTime(0.015,st+0.025);
+      g.gain.linearRampToValueAtTime(0,st+0.035);
+      var p=c.createStereoPanner();p.pan.value=pan;
+      o.connect(p).connect(g).connect(gn);o.start(st);o.stop(st+0.04);
+    }
+    T.push(setTimeout(cricketB,1500+Math.random()*3000));
+  }
+  T.push(setTimeout(cricketB,800));
+
+  // Owl
+  function owl(){
+    if(!live.night)return;var t=c.currentTime;
+    var f=380+Math.random()*60;
+    [0,0.55].forEach(function(off){
+      var o=c.createOscillator();o.type='sine';o.frequency.value=f;
+      var g=c.createGain();
+      g.gain.setValueAtTime(0,t+off);
+      g.gain.linearRampToValueAtTime(0.035,t+off+0.08);
+      g.gain.setValueAtTime(0.035,t+off+0.25);
+      g.gain.linearRampToValueAtTime(0,t+off+0.45);
+      o.connect(g).connect(gn);o.start(t+off);o.stop(t+off+0.5);
+    });
+    T.push(setTimeout(owl,18000+Math.random()*30000));
+  }
+  T.push(setTimeout(owl,5000+Math.random()*8000));
+  return{nodes:N,ids:T};
+}
+
+// ── FIRE (FIXED — LFO on filter freq, burst crackles) ──
+function mkFire(gn){
+  var c=AC(),N=[],T=[];
+  var rb=c.createBufferSource();rb.buffer=noiseBuf(8,'brown');rb.loop=true;
+  var rlp=c.createBiquadFilter();rlp.type='lowpass';rlp.frequency.value=280;
+  var rg=c.createGain();rg.gain.value=0.4;
+  var lfo=c.createOscillator();lfo.frequency.value=0.12;
+  var lfog=c.createGain();lfog.gain.value=60;
+  lfo.connect(lfog).connect(rlp.frequency);lfo.start();
+  rb.connect(rlp).connect(rg).connect(gn);rb.start();N.push(rb,lfo);
+
+  var mb=c.createBufferSource();mb.buffer=noiseBuf(5,'white');mb.loop=true;
+  var mbp=c.createBiquadFilter();mbp.type='bandpass';mbp.frequency.value=2200;mbp.Q.value=1.2;
+  var mg=c.createGain();mg.gain.value=0.05;
+  mb.connect(mbp).connect(mg).connect(gn);mb.start();N.push(mb);
+
+  // Crackle bursts
+  function crackle(){
+    if(!live.fire)return;var t=c.currentTime;
+    var count=3+Math.floor(Math.random()*6);
+    for(var i=0;i<count;i++){
+      var off=Math.random()*0.15;
+      var len=Math.floor(c.sampleRate*0.03);
+      var buf=c.createBuffer(1,len,c.sampleRate);var d=buf.getChannelData(0);
+      for(var j=0;j<len;j++)d[j]=(Math.random()*2-1)*Math.exp(-j/(c.sampleRate*0.004));
+      var s=c.createBufferSource();s.buffer=buf;
+      var g=c.createGain();g.gain.value=0.03+Math.random()*0.06;
+      var hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800+Math.random()*3000;
+      var p=c.createStereoPanner();p.pan.value=(Math.random()-0.5)*1.2;
+      s.connect(hp).connect(p).connect(g).connect(gn);s.start(t+off);
+    }
+    T.push(setTimeout(crackle,100+Math.random()*300));
+  }
+  crackle();
+
+  // Pops
+  function pop(){
+    if(!live.fire)return;var t=c.currentTime;
+    var len=Math.floor(c.sampleRate*0.05);
+    var buf=c.createBuffer(1,len,c.sampleRate);var d=buf.getChannelData(0);
+    for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*0.008));
+    var s=c.createBufferSource();s.buffer=buf;
+    var g=c.createGain();g.gain.value=0.1+Math.random()*0.08;
+    var bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=800+Math.random()*600;bp.Q.value=2;
+    s.connect(bp).connect(g).connect(gn);s.start();
+    T.push(setTimeout(pop,1500+Math.random()*4000));
+  }
+  T.push(setTimeout(pop,800));
+  return{nodes:N,ids:T};
+}
+
+// ── SINGING BOWL (FIXED — detuned pairs for natural beating) ──
+function mkBowl(gn){
+  var c=AC(),N=[],T=[];
+  function strike(){
+    if(!live.bowl)return;
+    var t=c.currentTime;
+    var fund=220;
+    var harmonics=[
+      {ratio:1,amp:0.10,detune:0.3,decay:10},
+      {ratio:2.0,amp:0.06,detune:0.5,decay:8},
+      {ratio:3.01,amp:0.035,detune:0.7,decay:6},
+      {ratio:4.7,amp:0.02,detune:1.0,decay:5},
+      {ratio:5.8,amp:0.012,detune:1.2,decay:4}
+    ];
+    harmonics.forEach(function(h){
+      var oA=c.createOscillator();oA.type='sine';oA.frequency.value=fund*h.ratio;
+      var oB=c.createOscillator();oB.type='sine';oB.frequency.value=fund*h.ratio+h.detune;
+      var g=c.createGain();
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(h.amp,t+0.008);
+      g.gain.setTargetAtTime(h.amp*0.5,t+0.5,h.decay*0.3);
+      g.gain.setTargetAtTime(0.0001,t+h.decay*0.5,h.decay*0.3);
+      oA.connect(g);oB.connect(g);g.connect(gn);
+      oA.start(t);oA.stop(t+h.decay+1);
+      oB.start(t);oB.stop(t+h.decay+1);
+    });
+    // Strike impact
+    var imp=c.createBufferSource();
+    var ibuf=c.createBuffer(1,c.sampleRate*0.05,c.sampleRate);
+    var id=ibuf.getChannelData(0);
+    for(var i=0;i<id.length;i++)id[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*0.005));
+    imp.buffer=ibuf;
+    var ig=c.createGain();ig.gain.setValueAtTime(0.06,t);ig.gain.exponentialRampToValueAtTime(0.001,t+0.08);
+    var ibp=c.createBiquadFilter();ibp.type='bandpass';ibp.frequency.value=3000;ibp.Q.value=1;
+    imp.connect(ibp).connect(ig).connect(gn);imp.start(t);
+    T.push(setTimeout(strike,12000+Math.random()*8000));
+  }
+  strike();
+  return{nodes:N,ids:T};
+}
+
+var engines={forest:mkForest,ocean:mkOcean,rain:mkRain,night:mkNight,fire:mkFire,bowl:mkBowl};
+
+function toggleSnd(type){
+  if(live[type]){
+    live[type].nodes.forEach(function(n){try{n.stop()}catch(e){}});
+    live[type].ids.forEach(clearTimeout);
+    live[type].gain.disconnect();
+    delete live[type];
+  }else{
+    var c=AC();var gn=c.createGain();
+    var card=document.querySelector('.sc[data-s="'+type+'"]');
+    var sv=card?card.querySelector('.sv'):null;
+    gn.gain.value=sv?parseFloat(sv.value):0.7;
+    gn.connect(master);
+    var r=engines[type](gn);
+    live[type]={gain:gn,nodes:r.nodes,ids:r.ids};
+  }
+}
+
+document.querySelectorAll('.sc').forEach(function(card){
+  card.addEventListener('click',function(e){
+    if(e.target.classList.contains('sv'))return;
+    card.classList.toggle('on');
+    toggleSnd(card.dataset.s);
+  });
+  var sv=card.querySelector('.sv');
+  if(sv){
+    sv.addEventListener('input',function(e){
+      e.stopPropagation();
+      var type=card.dataset.s;
+      if(live[type])live[type].gain.gain.setTargetAtTime(parseFloat(e.target.value),ctx.currentTime,0.1);
+    });
+    sv.addEventListener('click',function(e){e.stopPropagation()});
+  }
+});
+document.getElementById('m-vol').addEventListener('input',function(e){
+  if(master)master.gain.setTargetAtTime(parseFloat(e.target.value),ctx.currentTime,0.1);
+});
+
+var needsInit=true;
+function ensureSnd(){if(needsInit&&Object.keys(live).length===0){toggleSnd('forest');needsInit=false}}
+
+// ═══ TIMER ═══
+var total=300,left=300,tid=null,running=false;
+var CIRC=2*Math.PI*90;
+var rFg=document.getElementById('r-fg');
+rFg.style.strokeDasharray=CIRC;rFg.style.strokeDashoffset='0';
+function updT(){
+  var m=Math.floor(left/60),s=left%60;
+  document.getElementById('t-disp').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  rFg.style.strokeDashoffset=CIRC*(1-left/total);
+}
+function startT(){
+  if(running){clearInterval(tid);running=false;document.getElementById('b-go').textContent='이어서';document.getElementById('t-lbl').textContent='일시정지';return}
+  ensureSnd();running=true;
+  document.getElementById('b-go').textContent='일시정지';document.getElementById('t-lbl').textContent='명상 중';
+  tid=setInterval(function(){left--;updT();if(left<=0){clearInterval(tid);running=false;document.getElementById('b-go').textContent='명상 시작';document.getElementById('t-lbl').textContent='완료';onDone()}},1000);
+}
+function resetT(){
+  clearInterval(tid);running=false;
+  var ap=document.querySelector('.pre.on');
+  total=ap?parseInt(ap.dataset.m)*60:300;left=total;updT();
+  rFg.style.strokeDashoffset='0';
+  document.getElementById('b-go').textContent='명상 시작';document.getElementById('t-lbl').textContent='준비';
+}
+function onDone(){
+  var c=AC(),t=c.currentTime;
+  [1,1.5,2,3].forEach(function(h,i){
+    var o=c.createOscillator();o.frequency.value=440*h;
+    var g=c.createGain();
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime([0.08,0.05,0.03,0.015][i],t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+6);
+    o.connect(g).connect(master);o.start();o.stop(t+7);
+  });
+  document.getElementById('done-dur').textContent=Math.round(total/60)+'분간의 고요한 시간이었습니다';
+  document.getElementById('done').classList.add('show');
+}
+document.getElementById('b-go').addEventListener('click',startT);
+document.getElementById('b-rs').addEventListener('click',resetT);
+document.getElementById('b-done-cls').addEventListener('click',function(){document.getElementById('done').classList.remove('show');resetT()});
+document.querySelectorAll('.pre').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.pre').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    if(!running){total=parseInt(b.dataset.m)*60;left=total;updT();rFg.style.strokeDashoffset='0'}
+  });
+});
+
+// ═══ BREATHING ═══
+var bModes={'478':{i:4,h:7,o:8,h2:0},'box':{i:4,h:4,o:4,h2:4},'calm':{i:5,h:0,o:7,h2:0}};
+var bMode='478',bRun=false,bTid=null;
+document.querySelectorAll('.br-m').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.br-m').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    bMode=b.dataset.bm;if(bRun){stopB();startB()}
+  });
+});
+function startB(){bRun=true;document.getElementById('b-br').textContent='호흡 멈춤';ensureSnd();bCycle()}
+function stopB(){bRun=false;clearTimeout(bTid);document.getElementById('b-br').textContent='호흡 시작';document.getElementById('br-ball').className='br-ball';document.getElementById('br-txt').textContent='시작하기';document.getElementById('br-phase').textContent='탭하여 시작'}
+function bCycle(){
+  if(!bRun)return;
+  var m=bModes[bMode];var ball=document.getElementById('br-ball');var txt=document.getElementById('br-txt');var ph=document.getElementById('br-phase');
+  ball.style.transition='all '+m.i+'s ease-in-out';ball.className='br-ball';
+  setTimeout(function(){ball.classList.add('in')},30);
+  txt.textContent='들숨';ph.textContent=m.i+'초 들이마시기';
+  bTid=setTimeout(function(){
+    if(!bRun)return;
+    if(m.h>0){
+      ball.style.transition='all 0.5s ease';ball.className='br-ball in hold';
+      txt.textContent='참기';ph.textContent=m.h+'초 멈추기';
+      bTid=setTimeout(function(){if(bRun)exPhase()},m.h*1000);
+    }else exPhase();
+  },m.i*1000);
+  function exPhase(){
+    ball.style.transition='all '+m.o+'s ease-in-out';ball.className='br-ball out';
+    txt.textContent='날숨';ph.textContent=m.o+'초 내쉬기';
+    bTid=setTimeout(function(){
+      if(!bRun)return;
+      if(m.h2>0){ball.style.transition='all 0.5s ease';txt.textContent='참기';ph.textContent=m.h2+'초 멈추기';
+        bTid=setTimeout(function(){if(bRun)bCycle()},m.h2*1000);
+      }else bCycle();
+    },m.o*1000);
+  }
+}
+document.getElementById('b-br').addEventListener('click',function(){if(bRun)stopB();else startB()});
+updT();
+</script>
 </body>
 </html>
